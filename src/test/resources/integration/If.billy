@@ -1,0 +1,14 @@
+Integer i	
+
+main()
+	loop()
+	
+loop()
+	if i < 100:
+		i = i + 1
+		print(i + " ")
+		loop()
+	elseif true:
+		printLine("done")
+	else:
+		print("IMPOSSIBLE")

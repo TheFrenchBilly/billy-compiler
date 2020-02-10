@@ -1,0 +1,9 @@
+main()
+	print("Hello")
+	world()
+ 
+world()
+	print("World")
+
+world()
+	print("World")

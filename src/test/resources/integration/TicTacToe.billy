@@ -1,0 +1,139 @@
+// Tic tac toe in billy 0.0.1
+String choix
+
+// Array will have been good ...
+String one
+String two
+String three
+String four
+String five
+String six
+String seven
+String eight
+String nine
+
+String state // D -> Draw, X -> X win, O -> O win 
+String player // X or O
+Integer nbTurn // The number of turn played
+
+main()
+	ticTacToe()
+
+ticTacToe()
+	reset()
+	menu()
+	if choix == "1":
+		play()
+		ticTacToe()
+	elseif choix != "2":
+		printLine("Invalid choice")
+		ticTacToe()
+	
+play()
+	printTacToeToe()
+	registerPlayerInput()
+	nbTurn = nbTurn + 1
+	updateState()
+	if state == "":
+		switchTurn()
+		play()
+	else:
+		printResult()
+
+switchTurn()
+	if player == "X":
+		player = "O"
+	else:
+		player = "X"
+
+registerPlayerInput()
+	print("Player " + player + " ->")
+	String choice = readLine()
+	// Use this condition because the priority of operation does not exist ...
+	if choice + one == "11":
+		one = player
+	elseif choice + two == "22":
+		two = player
+	elseif choice + three == "33":
+		three = player
+	elseif choice + four == "44":
+		four = player
+	elseif choice + five == "55":
+		five = player
+	elseif choice + six == "66":
+		six = player
+	elseif choice + seven == "77":
+		seven = player
+	elseif choice + eight == "88":
+		eight = player
+	elseif choice + nine == "99":
+		nine = player
+	else:
+		printLine("Invalid Input")
+		registerPlayerInput()
+
+updateState()
+	checkWin()
+	switchTurn()
+	checkWin()
+	switchTurn()
+	if nbTurn + state == "9":
+		state = "D" // DRAW 
+
+checkWin()
+	String value = player + player + player
+	if one + two + three == value:
+		state = player
+	elseif four + five + six == value:
+		state = player
+	elseif seven + eight + nine == value:
+		state = player
+	elseif one + four + seven == value:
+		state = player
+	elseif two + five + eight == value:
+		state = player
+	elseif three + six + nine == value:
+		state = player
+	elseif one + five + nine == value:
+		state = player
+	elseif three + five + seven == value:
+		state = player
+	
+menu()
+	printLine("Welcome to the billy tic tac toe!")
+	printLine("1 - Play")	
+	printLine("2 - exit")
+	print("Votre choix ->")
+	choix = readLine()
+
+printTacToeToe()
+	printLine("")
+	printLine("  " + one + " | " + two + " | " + three)
+	printLine(" ___|___|___ " )
+	printLine("  " + four + " | " + five + " | " + six)
+	printLine(" ___|___|___ " )
+	printLine("  " + seven + " | " + eight + " | " + nine)
+	printLine("    |   |  " )
+	printLine("")
+	
+printResult()
+	printTacToeToe()
+	if state == "D":
+		printLine("This is a DRAW!")
+	else:
+		printLine("The " + state +" win!")
+
+reset()
+	one = "1"
+	two = "2"
+	three = "3"
+	four = "4"
+	five = "5"                
+	six = "6" 
+	seven = "7"
+	eight = "8"
+	nine = "9"
+	state = ""
+	player = "X"
+	nbTurn = 0
+	
