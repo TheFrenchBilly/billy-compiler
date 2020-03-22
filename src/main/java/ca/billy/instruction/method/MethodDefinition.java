@@ -37,7 +37,7 @@ public class MethodDefinition {
     }
 
     public Type getReturnType() {
-        return returnEnumType == null ? Type.VOID : returnEnumType.getTypeInfo().getBcelType();
+        return returnEnumType == null ? Type.VOID : returnEnumType.getBcelType();
     }
 
     public MethodDefinition setStatic() {
@@ -61,7 +61,7 @@ public class MethodDefinition {
     private Type[] convertType(EnumType[] args) {
         Type[] types = new Type[args.length];
         for (int i = 0; i < args.length; ++i) {
-            types[i] = args[i].getTypeInfo().getBcelType();
+            types[i] = args[i].getBcelType();
         }
         return types;
     }

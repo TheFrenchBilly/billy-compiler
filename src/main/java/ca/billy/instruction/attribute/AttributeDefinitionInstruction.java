@@ -24,11 +24,11 @@ public abstract class AttributeDefinitionInstruction extends VariableDefinitionI
     }
 
     public void build(BillyCodeInstructionArgs args) {
-        FieldGen fieldGen = new FieldGen(getAccesModifiers(), enumType.getTypeInfo().getBcelType(), name, args.getCp());
+        FieldGen fieldGen = new FieldGen(getAccesModifiers(), enumType.getBcelType(), name, args.getCp());
         Field f = fieldGen.getField();
         if (isStatic) {
             expression.build(args);
-            args.getIl().append(args.getFactory().createPutStatic("Main", name, enumType.getTypeInfo().getBcelType()));
+            args.getIl().append(args.getFactory().createPutStatic("Main", name, enumType.getBcelType()));
         }
         args.getCg().addField(f);
     }

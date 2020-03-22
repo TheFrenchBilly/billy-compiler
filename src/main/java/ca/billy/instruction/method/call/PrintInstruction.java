@@ -36,7 +36,7 @@ public class PrintInstruction implements BillyCodeInstruction, AlwaysValidBillyI
                         "java.io.PrintStream",
                         endLine ? "println" : "print",
                         Type.VOID,
-                        new Type[] { expression.getResultType().getTypeInfo().getBcelType() },
+                        new Type[] { expression.getResultType().getBcelType() },
                         Const.INVOKEVIRTUAL));
     }
 

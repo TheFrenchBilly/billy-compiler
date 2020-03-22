@@ -27,7 +27,7 @@ public class VariableDefinitionInstruction implements BillyCodeInstruction, Alwa
         super();
         this.name = name;
         this.enumType = enumType;
-        expression = new ConstExpression(enumType.getTypeInfo().getDefaultValue(), enumType);
+        expression = new ConstExpression(enumType.getDefaultValue(), enumType);
     }
 
     public VariableDefinitionInstruction(String name, EnumType enumType, IExpression expression) {
@@ -39,18 +39,18 @@ public class VariableDefinitionInstruction implements BillyCodeInstruction, Alwa
 
     @Override
     public void build(BillyCodeInstructionArgs args) {
-        LocalVariableGen lg = args.getMg().addLocalVariable(name, enumType.getTypeInfo().getBcelType(), null, null);
+        LocalVariableGen lg = args.getMg().addLocalVariable(name, enumType.getBcelType(), null, null);
         expression.build(args);
-        lg.setStart(args.getIl().append(InstructionFactory.createStore(enumType.getTypeInfo().getBcelType(), lg.getIndex())));
         index = lg.getIndex();
+        lg.setStart(args.getIl().append(InstructionFactory.createStore(enumType.getBcelType(), index)));
     }
 
     public void buildStore(BillyCodeInstructionArgs args) {
-        args.getIl().append(InstructionFactory.createStore(enumType.getTypeInfo().getBcelType(), index));
+        args.getIl().append(InstructionFactory.createStore(enumType.getBcelType(), index));
     }
     
     public void buildLoad(BillyCodeInstructionArgs args) {
-        args.getIl().append(InstructionFactory.createLoad(enumType.getTypeInfo().getBcelType(), index));
+        args.getIl().append(InstructionFactory.createLoad(enumType.getBcelType(), index));
     }
 
 }

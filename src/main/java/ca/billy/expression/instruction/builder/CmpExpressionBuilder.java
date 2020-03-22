@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.bcel.Const;
 import org.apache.bcel.generic.BranchInstruction;
+import org.apache.bcel.generic.FCMPG;
+import org.apache.bcel.generic.FCMPL;
 import org.apache.bcel.generic.GOTO;
 import org.apache.bcel.generic.ICONST;
 import org.apache.bcel.generic.InstructionFactory;
@@ -47,7 +49,7 @@ public class CmpExpressionBuilder extends AbstractExpressionBuilder {
 
     private void createCmp(BillyCodeInstructionArgs args) {
         GOTO gotoInstruction = new GOTO(null);
-        BranchInstruction branch = InstructionFactory.createBranchInstruction(getOperation(), null);
+        BranchInstruction branch = InstructionFactory.createBranchInstruction(getOperation(args), null);
 
         BranchUtils.createBranch(branch, args);
 
@@ -57,17 +59,33 @@ public class CmpExpressionBuilder extends AbstractExpressionBuilder {
         gotoInstruction.setTarget(args.getIl().append(new NOP()));
     }
 
-    private short getOperation() {
-        switch (op) {
-            case "==":
-                return Const.IF_ICMPNE;
-            case "!=":
-                return Const.IF_ICMPEQ;
-            case ">":
-                return Const.IF_ICMPLE;
-            case "<":
-                return Const.IF_ICMPGE;
-
+    private short getOperation(BillyCodeInstructionArgs args) {
+        if (type.equals(Type.INT)) {
+            switch (op) {
+                case "==":
+                    return Const.IF_ICMPNE;
+                case "!=":
+                    return Const.IF_ICMPEQ;
+                case ">":
+                    return Const.IF_ICMPLE;
+                case "<":
+                    return Const.IF_ICMPGE;
+            }
+        } else if (type.equals(Type.FLOAT)){
+            switch (op) {
+                case "==":
+                    args.getIl().append(new FCMPL());
+                    return Const.IFNE;
+                case "!=":
+                    args.getIl().append(new FCMPL());
+                    return Const.IFEQ;
+                case ">":
+                    args.getIl().append(new FCMPL());
+                    return Const.IFLE;
+                case "<":
+                    args.getIl().append(new FCMPG());
+                    return Const.IFGE;
+            }
         }
         throw new BillyException("Should not happen");
     }

@@ -28,7 +28,7 @@ public class StringConcatExpressionBuilder implements ExpressionBuilder {
     @Override
     public void build(SimpleExpression right, BillyCodeInstructionArgs args) {
         createStringBuilder(args);
-        StackUtil.swap(args.getIl(), 2, right.getType(args.getContext()).getTypeInfo().getBcelType().getSize());
+        StackUtil.swap(args.getIl(), 2, right.getType(args.getContext()).getBcelType().getSize());
         initStringBuilder(leftType, args);
         appendToStringBuilder(right, args);
         toString(args);
@@ -38,15 +38,18 @@ public class StringConcatExpressionBuilder implements ExpressionBuilder {
         args.getIl().append(args.getFactory().createNew(StringBuilder.class.getName()));
         args.getIl().append(InstructionConst.DUP);
     }
-    
+
     private void initStringBuilder(Type type, BillyCodeInstructionArgs args) {
-        args.getIl().append(
-                args.getFactory().createInvoke(
-                        StringBuilder.class.getName(),
-                        "<init>",
-                        Type.VOID,
-                        new Type[] { type },
-                        Const.INVOKESPECIAL));
+        if (type.equals(Type.STRING)) {
+            args.getIl().append(args.getFactory().createInvoke(StringBuilder.class.getName(), "<init>", Type.VOID, new Type[] { type }, Const.INVOKESPECIAL));
+        } else {
+            StackUtil.swap(args.getIl(), 2, type.getSize());
+            args.getIl().append(args.getFactory().createInvoke(StringBuilder.class.getName(), "<init>", Type.VOID, new Type[] {}, Const.INVOKESPECIAL));
+            args.getIl().append(
+                    args
+                            .getFactory()
+                            .createInvoke(StringBuilder.class.getName(), "append", new ObjectType(StringBuilder.class.getName()), new Type[] { type }, Const.INVOKEVIRTUAL));
+        }
     }
 
     private void appendToStringBuilder(SimpleExpression exp, BillyCodeInstructionArgs args) {
@@ -56,7 +59,7 @@ public class StringConcatExpressionBuilder implements ExpressionBuilder {
                         StringBuilder.class.getName(),
                         "append",
                         new ObjectType(StringBuilder.class.getName()),
-                        new Type[] { exp.getResultType().getTypeInfo().getBcelType() },
+                        new Type[] { exp.getResultType().getBcelType() },
                         Const.INVOKEVIRTUAL));
     }
 

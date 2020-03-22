@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class BranchUtils {
 
     public static void createBranch(BranchInstruction branch, BillyCodeInstructionArgs args, Type... stackType) {
-        Type[] locals = args.getContext().getVariables().stream().map(v -> v.getEnumType().getTypeInfo().getBcelType()).toArray(Type[]::new);
+        Type[] locals = args.getContext().getVariables().stream().map(v -> v.getEnumType().getBcelType()).toArray(Type[]::new);
         args.getStackMapBuilder().addFrame(args.getIl().append(branch), locals, stackType);
     }
 

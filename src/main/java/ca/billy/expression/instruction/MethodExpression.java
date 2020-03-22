@@ -36,7 +36,7 @@ public class MethodExpression implements SimpleExpression {
     public void build(BillyCodeInstructionArgs args) {
         if (expectedReturn != null && !getType(args.getContext()).typeMatch(expectedReturn)) {
             throw new BillyException(
-                    "The type " + expectedReturn.getTypeInfo().getName() + " is not assignable for the type " + getType(args.getContext()).getTypeInfo().getName());
+                    "The type " + expectedReturn.getName() + " is not assignable for the type " + getType(args.getContext()).getName());
         }
         
         // TODO make more that readLine usable

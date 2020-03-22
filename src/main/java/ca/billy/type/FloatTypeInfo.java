@@ -4,41 +4,41 @@ import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
 
-// TODO min, max ?
-class IntegerTypeInfo implements TypeInfo<Integer> {
+class FloatTypeInfo implements TypeInfo<Float> {
 
     @Override
     public boolean isValidValue(String s) {
         try {
-            Integer.parseInt(s);
+            Float.parseFloat(s);
             return true;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException value) {
             return false;
         }
     }
 
     @Override
-    public Integer getDefaultValue() {
-        return new Integer(0);
+    public Float getDefaultValue() {
+        return new Float(0);
     }
 
     @Override
-    public Integer getValue(String value) {
-        return Integer.parseInt(value);
+    public Float getValue(String value) {
+        return Float.parseFloat(value);
     }
 
     @Override
     public String getName() {
-        return "Integer";
+        return "Float";
     }
 
     @Override
     public Type getBcelType() {
-        return Type.INT;
+        return Type.FLOAT;
     }
     
     @Override
     public PUSH createPush(ConstantPoolGen cp, Object value) {
-        return new PUSH(cp, (int) value);
+        return new PUSH(cp, (float) value);
     }
+
 }

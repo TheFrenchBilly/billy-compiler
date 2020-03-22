@@ -3,14 +3,11 @@ package ca.billy.expression;
 import ca.billy.BillyException;
 import ca.billy.Const;
 import ca.billy.expression.instruction.Expression;
+import ca.billy.expression.instruction.ExpressionFactory;
 import ca.billy.expression.instruction.IExpression;
-import ca.billy.expression.instruction.ConstExpression;
-import ca.billy.expression.instruction.MethodExpression;
 import ca.billy.expression.instruction.SimpleExpression;
-import ca.billy.expression.instruction.VariableExpression;
 import ca.billy.expression.type.ExpressionType;
 import ca.billy.instruction.context.BillyInstructionContext;
-import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.type.EnumType;
 import lombok.AllArgsConstructor;
 
@@ -18,10 +15,8 @@ import lombok.AllArgsConstructor;
 // No fast failing so it's more easy
 public class ExpressionProcessor {
 
-    private static String VAR_REGEX = "[a-zA-Z]+";
-
     @AllArgsConstructor
-    static class OperatorIndex {
+    private static class OperatorIndex {
         int index;
         OperatorEnum op;
     }
@@ -29,17 +24,17 @@ public class ExpressionProcessor {
     public IExpression buildExpression(String stringExpression, EnumType expectedReturn, BillyInstructionContext instructionContext) {
         OperatorIndex opIndex = getOperatorIndex(stringExpression);
         if (opIndex.index == -1) {
-            SimpleExpression result = getSimpleExpression(stringExpression, instructionContext);
+            SimpleExpression result = ExpressionFactory.createSimpleExpression(stringExpression, instructionContext);
             if (!result.matchResultType(expectedReturn)) {
                 throw new BillyException(
-                        "The type " + expectedReturn.getTypeInfo().getName() + " is not assignable for the type " + result.getResultType().getTypeInfo().getName());
+                        "The type " + expectedReturn.getName() + " is not assignable for the type " + result.getResultType().getName());
             }
             return result;
         }
 
         String left = stringExpression.substring(0, opIndex.index).trim();
         String right = stringExpression.substring(opIndex.index + opIndex.op.getOperator().length()).trim();
-        Expression result = new Expression(getSimpleExpression(left, instructionContext));
+        Expression result = new Expression(ExpressionFactory.createSimpleExpression(left, instructionContext));
         result = buildExpression(right, opIndex.op, result, expectedReturn, instructionContext);
         return result;
     }
@@ -47,11 +42,11 @@ public class ExpressionProcessor {
     private Expression buildExpression(String stringExpression, OperatorEnum op, Expression expression, EnumType expectedReturn, BillyInstructionContext instructionContext) {
         OperatorIndex opIndex = getOperatorIndex(stringExpression);
         if (opIndex.index == -1) {
-            SimpleExpression right = getSimpleExpression(stringExpression.trim(), instructionContext);
+            SimpleExpression right = ExpressionFactory.createSimpleExpression(stringExpression.trim(), instructionContext);
             ExpressionType expressionType = op.retrieveExpressionType(expression.getResultType(), right.getResultType());
             if (!expressionType.getOut().typeMatch(expectedReturn)) {
                 throw new BillyException(
-                        "The type " + expectedReturn.getTypeInfo().getName() + " is not assignable for the type " + expressionType.getOut().getTypeInfo().getName());
+                        "The type " + expectedReturn.getName() + " is not assignable for the type " + expressionType.getOut().getName());
             }
             expression.add(expressionType, right);
             return expression;
@@ -59,26 +54,10 @@ public class ExpressionProcessor {
 
         String left = stringExpression.substring(0, opIndex.index).trim();
         String right = stringExpression.substring(opIndex.index + opIndex.op.getOperator().length()).trim();
-        SimpleExpression leftExpression = getSimpleExpression(left, instructionContext);
+        SimpleExpression leftExpression = ExpressionFactory.createSimpleExpression(left, instructionContext);
         ExpressionType expressionType = op.retrieveExpressionType(expression.getResultType(), leftExpression.getResultType());
         expression.add(expressionType, leftExpression);
         return buildExpression(right, opIndex.op, expression, expectedReturn, instructionContext);
-    }
-
-    private SimpleExpression getSimpleExpression(String value, BillyInstructionContext instructionContext) {
-        EnumType type = EnumType.findTypeWithValue(value);
-        if (type != null) {
-            return new ConstExpression(type.getTypeInfo().getValue(value), type);
-        } else if (value.indexOf(Const.START_PARENTHESES) != -1 && value.endsWith(Const.END_PARENTHESES)) {
-            return new MethodExpression(value);
-        } else if (value.matches(VAR_REGEX)) {
-            VariableDefinitionInstruction variableDefinitionInstruction = instructionContext.findVariable(value);
-            if (variableDefinitionInstruction == null) {
-                throw new BillyException("variable not define : " + value);
-            }
-            return new VariableExpression(value, variableDefinitionInstruction.getEnumType());
-        }
-        throw new BillyException("No available type for the input " + value);
     }
 
     private OperatorIndex getOperatorIndex(String stringExpression) {

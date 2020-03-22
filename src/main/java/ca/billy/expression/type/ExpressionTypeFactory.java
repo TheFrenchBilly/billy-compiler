@@ -16,7 +16,7 @@ public class ExpressionTypeFactory {
     public static SimpleExpressionType createBinaryExpressionType(EnumType type, String op) {
         SimpleExpressionType expressionType = new SimpleExpressionType();
         expressionType.left = expressionType.right = expressionType.out = type;
-        expressionType.builder = new BinaryExpressionBuilder(op, type.getTypeInfo().getBcelType());
+        expressionType.builder = new BinaryExpressionBuilder(op, type.getBcelType());
         return expressionType;
     }
 
@@ -32,7 +32,7 @@ public class ExpressionTypeFactory {
         expressionType.left = left;
         expressionType.right = right;
         expressionType.out = EnumType.STRING;
-        expressionType.builder = new StringConcatExpressionBuilder(left.getTypeInfo().getBcelType());
+        expressionType.builder = new StringConcatExpressionBuilder(left.getBcelType());
         return expressionType;
     }
 
@@ -40,7 +40,7 @@ public class ExpressionTypeFactory {
         SimpleExpressionType expressionType = new SimpleExpressionType();
         expressionType.left = expressionType.right = type;
         expressionType.out = EnumType.BOOLEAN;
-        expressionType.builder = new CmpExpressionBuilder(op, type.getTypeInfo().getBcelType());
+        expressionType.builder = new CmpExpressionBuilder(op, type.getBcelType());
         return expressionType;
     }
 

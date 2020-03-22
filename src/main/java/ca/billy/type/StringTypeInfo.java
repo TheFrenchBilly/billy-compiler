@@ -1,11 +1,13 @@
 package ca.billy.type;
 
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
 
-public class StringTypeInfo implements TypeInfo<String> {
+class StringTypeInfo implements TypeInfo<String> {
 
     @Override
     public boolean isValidValue(String s) throws BillyException {
@@ -27,11 +29,6 @@ public class StringTypeInfo implements TypeInfo<String> {
     }
 
     @Override
-    public Class<String> getJavaClass() {
-        return String.class;
-    }
-
-    @Override
     public String getName() {
         return "String";
     }
@@ -39,5 +36,10 @@ public class StringTypeInfo implements TypeInfo<String> {
     @Override
     public Type getBcelType() {
         return Type.STRING;
+    }
+    
+    @Override
+    public PUSH createPush(ConstantPoolGen cp, Object value) {
+        return new PUSH(cp, (String) value);
     }
 }

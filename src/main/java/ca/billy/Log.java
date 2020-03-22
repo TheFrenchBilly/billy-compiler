@@ -1,6 +1,10 @@
 package ca.billy;
 
+import lombok.Getter;
+
 public class Log {
+    
+    @Getter
     private static boolean enabled;
 
     private static long startTime;

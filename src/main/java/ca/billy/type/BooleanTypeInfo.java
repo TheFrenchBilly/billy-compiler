@@ -1,11 +1,13 @@
 package ca.billy.type;
 
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
 
-public class BooleanConverter implements TypeInfo<Boolean> {
+class BooleanTypeInfo implements TypeInfo<Boolean> {
 
     @Override
     public boolean isValidValue(String s) throws BillyException {
@@ -23,12 +25,6 @@ public class BooleanConverter implements TypeInfo<Boolean> {
     }
 
     @Override
-    public Class<Boolean> getJavaClass() {
-        return boolean.class;
-    }
-
-
-    @Override
     public String getName() {
         return "Boolean";
     }
@@ -36,6 +32,11 @@ public class BooleanConverter implements TypeInfo<Boolean> {
     @Override
     public Type getBcelType() {
         return Type.BOOLEAN;
+    }
+
+    @Override
+    public PUSH createPush(ConstantPoolGen cp, Object value) {
+        return new PUSH(cp, (boolean) value);
     }
 
 }

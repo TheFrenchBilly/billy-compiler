@@ -7,4 +7,4 @@ space()
 	print(" ")
 
 world()
-	print("World")
+	print("world")
