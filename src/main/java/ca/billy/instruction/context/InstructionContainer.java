@@ -20,7 +20,7 @@ import ca.billy.instruction.method.MainInstruction;
 import ca.billy.instruction.method.MethodDefinition;
 import ca.billy.instruction.method.MethodInstruction;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
-import ca.billy.line.LineContainer.LineContext;
+import ca.billy.line.BillyLineContainer.LineContext;
 import ca.billy.type.EnumType;
 import lombok.Getter;
 
@@ -31,12 +31,17 @@ public class InstructionContainer implements BillyInstructionContext {
     @Getter
     private List<MethodInstruction> staticMethods;
 
+    private List<MethodDefinition> defaultMethods;
+
     @Getter
     private List<MainAttributeDefinitionInstruction> staticAttributes;
 
     public InstructionContainer() {
         staticMethods = new ArrayList<>();
         staticAttributes = new ArrayList<>();
+        defaultMethods = new ArrayList<>();
+        defaultMethods.add(new MethodDefinition(ca.billy.Const.READ_LINE, EnumType.STRING));
+        defaultMethods.add(new MethodDefinition(ca.billy.Const.ARRAY_LENGTH_LINE, EnumType.INTEGER, EnumType.ANY_ARRAY));
     }
 
     @Override
@@ -51,28 +56,19 @@ public class InstructionContainer implements BillyInstructionContext {
             staticAttributes.add((MainAttributeDefinitionInstruction) instruction);
         }
     }
-    
+
     @Override
     public List<BillyInstruction> getIntructions() {
-        List<BillyInstruction> list =  Arrays.asList(mainInstruction);
+        List<BillyInstruction> list = Arrays.asList(mainInstruction);
         list.addAll(staticMethods);
         return list;
     }
 
     @Override
-    public MethodDefinition findMethod(String methodName) {
-        if (ca.billy.Const.READ_LINE.equals(methodName)) {
-            return new MethodDefinition(methodName, EnumType.STRING);
-        }
-        
-        return staticMethods.stream().map(MethodInstruction::getMethodDefinition).filter(m -> m.getName().equals(methodName)).findFirst().orElse(null);
+    public VariableDefinitionInstruction findVariable(String variableName) {
+        return findLocalVariable(variableName);
     }
 
-    @Override
-    public VariableDefinitionInstruction findVariable(String variableName) {
-        return staticAttributes.stream().filter(a -> a.getName().equals(variableName)).findFirst().orElse(null);
-    }
-    
     @Override
     public List<? extends VariableDefinitionInstruction> getVariables() {
         return staticAttributes;
@@ -80,19 +76,46 @@ public class InstructionContainer implements BillyInstructionContext {
 
     @Override
     public boolean isExistingVariable(String variableName) {
-        return findVariable(variableName) != null;
+        return isExistingLocalVariable(variableName);
+    }
+
+    @Override
+    public VariableDefinitionInstruction findLocalVariable(String variableName) {
+        return staticAttributes.stream().filter(a -> a.getName().equals(variableName)).findFirst().orElse(null);
+    }
+
+    @Override
+    public boolean isExistingLocalVariable(String variableName) {
+        return findLocalVariable(variableName) != null;
+    }
+
+    @Override
+    public MethodDefinition findDefaultMethod(String methodName) {
+        return defaultMethods.stream().filter(m -> m.getName().equals(methodName)).findFirst().orElse(null);
+    }
+
+    @Override
+    public MethodDefinition findMethod(String methodName) {
+        return findLocalMethod(methodName);
+    }
+
+    @Override
+    public MethodDefinition findLocalMethod(String methodName) {
+        MethodDefinition methodDefinition = findDefaultMethod(methodName);
+        if (methodDefinition == null) {
+            return staticMethods.stream().map(MethodInstruction::getMethodDefinition).filter(m -> m.getName().equals(methodName)).findFirst().orElse(null);
+        }
+        return methodDefinition;
     }
 
     @Override
     public boolean isExistingMethod(String methodName) {
-        return findMethod(methodName) != null;
+        return isExistingLocalMethod(methodName);
     }
 
     @Override
-    public void valid(BillyInstructionContext instructionContext) {
-        if (mainInstruction == null)
-            throw new BillyException("no main()");
-        mainInstruction.valid(this);
+    public boolean isExistingLocalMethod(String methodName) {
+        return findLocalMethod(methodName) != null;
     }
 
     @Override
@@ -111,6 +134,9 @@ public class InstructionContainer implements BillyInstructionContext {
     }
 
     public ClassGen build() {
+        if (mainInstruction == null)
+            throw new BillyException("no main()");
+
         ClassGen cg = new ClassGen("Main", "java.lang.Object", "<generated>", Const.ACC_PUBLIC | Const.ACC_SUPER, null);
         cg.setMajor(52);
         cg.setMinor(0);
@@ -138,5 +164,4 @@ public class InstructionContainer implements BillyInstructionContext {
 
         return cg;
     }
-
 }

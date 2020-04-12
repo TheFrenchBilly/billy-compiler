@@ -2,23 +2,23 @@ package ca.billy.line.control;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
-import ca.billy.expression.ExpressionProcessor;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.control.ElseInstruction;
 import ca.billy.line.BillyLine;
+import ca.billy.line.LineWrapper;
 
 public class ElseLine implements BillyLine {
 
     @Override
-    public boolean isValid(String line, BillyInstructionContext instructionContext) {
-        if (line.endsWith(Const.COLONS)) {
-            int index = line.indexOf(Const.SPACE);
+    public boolean isValid(LineWrapper line, BillyInstructionContext instructionContext) {
+        if (line.getLine().endsWith(Const.COLONS)) {
+            int index = line.getLine().indexOf(Const.SPACE);
             if (index != -1) {
-                return isValidName(line.substring(0, index));
+                return isValidName(line.getLine().substring(0, index));
             }
 
-            return isValidName(line.substring(0, line.indexOf(Const.COLONS)));
+            return isValidName(line.getLine().substring(0, line.getLine().indexOf(Const.COLONS)));
         }
 
         return false;
@@ -29,10 +29,10 @@ public class ElseLine implements BillyLine {
     }
 
     @Override
-    public BillyInstruction createBillyInstruction(String line, BillyInstructionContext instructionContext, ExpressionProcessor expressionProcessor) {
-        int index = line.indexOf(Const.SPACE);
+    public BillyInstruction createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
+        int index = line.getLine().indexOf(Const.SPACE);
         if (index != -1) {
-            String exp = line.substring(index + 1, line.length() - 1);
+            String exp = line.getLine().substring(index + 1, line.getLine().length() - 1);
             if (!exp.trim().equals(Const.EMPTY)) {
                 throw new BillyException("Invalid else ligne :" + line);
             }

@@ -1,11 +1,12 @@
-package ca.billy.line.method;
+package ca.billy.line.method.build.in;
 
 import ca.billy.Const;
-import ca.billy.expression.ExpressionProcessor;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.InstructionContainer;
 import ca.billy.instruction.method.MainInstruction;
 import ca.billy.line.BillyLineContext;
+import ca.billy.line.LineWrapper;
+import ca.billy.line.method.AbstractMethodWithoutParameterLine;
 
 public class MainMethodLine extends AbstractMethodWithoutParameterLine implements BillyLineContext {
 
@@ -15,7 +16,7 @@ public class MainMethodLine extends AbstractMethodWithoutParameterLine implement
     }
 
     @Override
-    public MainInstruction createBillyInstruction(String line, BillyInstructionContext instructionContext, ExpressionProcessor expressionProcessor) {
+    public MainInstruction createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
         return new MainInstruction((InstructionContainer) instructionContext);
     }
 

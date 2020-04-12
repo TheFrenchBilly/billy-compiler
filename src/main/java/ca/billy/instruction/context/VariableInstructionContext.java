@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.method.MethodDefinition;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
-import ca.billy.line.LineContainer.LineContext;
+import ca.billy.line.BillyLineContainer.LineContext;
 import lombok.Getter;
 
 public abstract class VariableInstructionContext implements BillyInstructionContext {
@@ -25,11 +25,6 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
     }
 
     @Override
-    public void valid(BillyInstructionContext instructionContext) {
-        instructions.forEach((i) -> i.valid(instructionContext));
-    }
-    
-    @Override
     public void add(BillyInstruction instruction) {
         instructions.add(instruction);
     }
@@ -37,22 +32,6 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
     @Override
     public List<BillyInstruction> getIntructions() {
         return instructions;
-    }
-
-    // By default a BillyInstructionContext don't have method so it's lets his parent try
-    @Override
-    public MethodDefinition findMethod(String methodName) {
-        return getParent().findMethod(methodName);
-    }
-
-    @Override
-    public VariableDefinitionInstruction findVariable(String variableName) {
-        return (VariableDefinitionInstruction) getInstructions()
-                .stream()
-                .filter(VariableDefinitionInstruction.class::isInstance)
-                .filter(v -> ((VariableDefinitionInstruction) v).getName().equals(variableName))
-                .findFirst()
-                .orElse(getParent().findVariable(variableName));
     }
 
     @Override
@@ -75,16 +54,63 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
 
         return variables;
     }
+    
+    @Override
+    public VariableDefinitionInstruction findVariable(String variableName) {
+        return (VariableDefinitionInstruction) getInstructions()
+                .stream()
+                .filter(VariableDefinitionInstruction.class::isInstance)
+                .filter(v -> ((VariableDefinitionInstruction) v).getName().equals(variableName))
+                .findFirst()
+                .orElse(getParent().findVariable(variableName));
+    }
+    
+    @Override
+    public VariableDefinitionInstruction findLocalVariable(String variableName) {
+        return (VariableDefinitionInstruction) getInstructions()
+                .stream()
+                .filter(VariableDefinitionInstruction.class::isInstance)
+                .filter(v -> ((VariableDefinitionInstruction) v).getName().equals(variableName))
+                .findFirst().orElse(null);
+    }
+    
+    @Override
+    public MethodDefinition findDefaultMethod(String methodName) {
+        // By default a BillyInstructionContext don't have default method so it's lets his parent try
+        return getParent().findDefaultMethod(methodName);
+    }
+    
+    @Override
+    public MethodDefinition findMethod(String methodName) {
+        // By default a BillyInstructionContext don't have method so it's lets his parent try
+        return getParent().findMethod(methodName);
+    }
+    
+    @Override
+    public MethodDefinition findLocalMethod(String methodName) {
+        return null;
+    }
 
     @Override
     public boolean isExistingVariable(String variableName) {
         return findVariable(variableName) != null;
     }
-
+    
+    @Override
+    public boolean isExistingLocalVariable(String variableName) {
+        return findLocalVariable(variableName) != null;
+    }
+    
     @Override
     public boolean isExistingMethod(String methodName) {
         return findMethod(methodName) != null;
     }
+    
+    @Override
+    public boolean isExistingLocalMethod(String methodName) {
+        return findLocalMethod(methodName) != null;
+    }
+   
 
     @Override
     public LineContext getLineEndContext() {

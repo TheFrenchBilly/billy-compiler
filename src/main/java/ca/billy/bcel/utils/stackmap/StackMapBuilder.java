@@ -53,7 +53,7 @@ public class StackMapBuilder {
     
     int adjustLocals(Type[] locals) {
         int length = locals.length - this.locals.length;
-        if (length == 0) {
+        if (length == 0 /** FIXME*/ || length < 0) {
             return 0;
         }
         Type[] newLocals = new Type[length];

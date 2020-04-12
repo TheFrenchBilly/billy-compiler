@@ -8,14 +8,14 @@ import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.NOP;
 
 import ca.billy.bcel.utils.BranchUtils;
-import ca.billy.expression.instruction.IExpression;
+import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 
 public class ElseIfInstruction extends IfInstruction {
 
-    public ElseIfInstruction(BillyInstructionContext parent, IExpression expression) {
+    public ElseIfInstruction(BillyInstructionContext parent, Expression expression) {
         super(parent, expression);
     }
 

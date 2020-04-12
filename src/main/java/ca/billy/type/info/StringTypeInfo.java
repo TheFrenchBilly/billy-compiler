@@ -1,11 +1,11 @@
-package ca.billy.type;
+package ca.billy.type.info;
 
-import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
+import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 
 class StringTypeInfo implements TypeInfo<String> {
 
@@ -18,10 +18,10 @@ class StringTypeInfo implements TypeInfo<String> {
     public String getDefaultValue() {
         return "";
     }
-    
+
     @Override
     public String getValue(String value) {
-        return value.substring(1, value.length() -1);
+        return value.substring(1, value.length() - 1);
     }
 
     private int countQuote(String s) {
@@ -37,9 +37,14 @@ class StringTypeInfo implements TypeInfo<String> {
     public Type getBcelType() {
         return Type.STRING;
     }
-    
+
     @Override
-    public PUSH createPush(ConstantPoolGen cp, Object value) {
-        return new PUSH(cp, (String) value);
+    public Class<String> getJavaClass() {
+        return String.class;
+    }
+
+    @Override
+    public void buildConst(BillyCodeInstructionArgs args, Object value) {
+        args.getIl().append(new PUSH(args.getCp(), (String) value));
     }
 }

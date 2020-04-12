@@ -3,6 +3,7 @@ package ca.billy.bcel.utils.stackmap;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.StackMapEntry;
 import org.apache.bcel.classfile.StackMapType;
+import org.apache.bcel.generic.ArrayType;
 import org.apache.bcel.generic.BasicType;
 import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
@@ -33,7 +34,10 @@ public class StackMapBuilderEntry {
             return buildAppendFrame(offset, localDiff, cp);
         }
 
-        throw new IllegalArgumentException("Unsuported stack map frame");
+        /** FIXME */
+        return buildFullFrame(offset, cp);
+
+        // throw new IllegalArgumentException("Unsuported stack map frame");
     }
 
     int getTargetPosition() {
@@ -43,7 +47,7 @@ public class StackMapBuilderEntry {
     private StackMapEntry buildAppendFrame(int offset, int localDiff, ConstantPoolGen cp) {
         Type[] typesOfLocals = new Type[localDiff];
         for (int i = localDiff - 1; i > -1; --i) {
-            typesOfLocals[i] = this.typesOfLocals[this.typesOfLocals.length - 1 + i];
+            typesOfLocals[i] = this.typesOfLocals[(this.typesOfLocals.length - localDiff) + i];
         }
         return new StackMapEntry(Const.APPEND_FRAME + localDiff - 1, offset, getStackMapType(typesOfLocals, cp), new StackMapType[0], cp.getConstantPool());
     }
@@ -63,8 +67,15 @@ public class StackMapBuilderEntry {
         return new StackMapEntry(Const.SAME_FRAME + offset, 0, new StackMapType[0], new StackMapType[0], cp.getConstantPool());
     }
 
+    private StackMapEntry buildFullFrame(int offset, ConstantPoolGen cp) {
+        StackMapType[] typesOfLocals = getStackMapType(this.typesOfLocals, cp);
+        StackMapType[] typesOfStackItems = getStackMapType(this.typesOfStackItems, cp);
+
+        return new StackMapEntry(Const.FULL_FRAME, offset, typesOfLocals, typesOfStackItems, cp.getConstantPool());
+    }
+
     private int getOffset(StackMapBuilderEntry previous) {
-        return previous == null ? getTargetPosition() : getTargetPosition() - 1 - previous.getTargetPosition();
+        return previous == null ? getTargetPosition()  : getTargetPosition() - 1 - previous.getTargetPosition();
     }
 
     private StackMapType[] getStackMapType(Type[] types, ConstantPoolGen cp) {
@@ -81,8 +92,12 @@ public class StackMapBuilderEntry {
             return new StackMapType(Const.ITEM_Integer, cp.addUtf8(BasicType.BOOLEAN.getSignature()), cp.getConstantPool());
         } else if (type.equals(BasicType.INT)) {
             return new StackMapType(Const.ITEM_Integer, cp.addUtf8(BasicType.INT.getSignature()), cp.getConstantPool());
+        } else if (type.equals(BasicType.FLOAT)) {
+            return new StackMapType(Const.ITEM_Float, cp.addUtf8(BasicType.FLOAT.getSignature()), cp.getConstantPool());
         } else if (type.equals(Type.STRING)) {
             return new StackMapType(Const.ITEM_Object, cp.addClass(Type.STRING), cp.getConstantPool());
+        } else if (type instanceof ArrayType) {
+            return new StackMapType(Const.ITEM_Object, cp.addArrayClass((ArrayType) type), cp.getConstantPool());
         }
 
         throw new IllegalStateException("Should not happen");

@@ -5,19 +5,14 @@ import java.util.Optional;
 import org.apache.bcel.generic.ClassGen;
 
 import ca.billy.BillyException;
-import ca.billy.expression.ExpressionProcessor;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.InstructionContainer;
-import ca.billy.line.LineContainer.LineContext;
+import ca.billy.line.BillyLineContainer.LineContext;
 
 public class LineProcessor {
 
     private int indent;
-
-    private LineContainer lineContainer;
-
-    private ExpressionProcessor expressionProcessor;
 
     private BillyInstructionContext billyInstructionContext;
 
@@ -27,8 +22,6 @@ public class LineProcessor {
         super();
         lineEndContext = LineContext.NONE;
         indent = 0;
-        lineContainer = new LineContainer();
-        expressionProcessor = new ExpressionProcessor();
         billyInstructionContext = new InstructionContainer();
     }
 
@@ -48,23 +41,21 @@ public class LineProcessor {
             if (lineWrapper.isEmpty())
                 return;
 
-            int lineIndent = lineWrapper.getIndent();
-            if (lineIndent < indent) {
-                for (; indent != lineIndent; --indent) {
+            if (lineWrapper.getIndent() < indent) {
+                for (; indent != lineWrapper.getIndent(); --indent) {
                     lineEndContext = billyInstructionContext.getLineEndContext();
                     billyInstructionContext = billyInstructionContext.getParent();
                 }
-            } else if (lineIndent > indent) {
+            } else if (lineWrapper.getIndent() > indent) {
                 throw new BillyException("To much indentation");
             }
 
-            final String lineWithoutIndent = lineWrapper.getLine().substring(indent).trim();
-            Optional<BillyLine> billyLineOptional = getBillyLine(lineWithoutIndent);
+            Optional<BillyLine> billyLineOptional = getBillyLine(lineWrapper);
 
             if (billyLineOptional.isPresent()) {
                 BillyLine billyLine = billyLineOptional.get();
 
-                BillyInstruction instruction = billyLine.createBillyInstruction(lineWithoutIndent, billyInstructionContext, expressionProcessor);
+                BillyInstruction instruction = billyLine.createBillyInstruction(lineWrapper, billyInstructionContext);
                 billyInstructionContext.add(instruction);
 
                 if (instruction instanceof BillyInstructionContext) {
@@ -75,22 +66,18 @@ public class LineProcessor {
                 throw new BillyException("Unexpected line");
             }
         } catch (BillyException billyException) {
-            throw new BillyException(billyException.getMessage(), lineWrapper);
+            throw new BillyException(billyException.getMessage(), lineWrapper, billyException);
         }
     }
 
-    private Optional<BillyLine> getBillyLine(final String lineWithoutIndent) {
-        Optional<BillyLine> billyLineOptional = lineContainer
-                .get(lineEndContext)
-                .stream()
-                .filter(billyLine -> billyLine.isValid(lineWithoutIndent, billyInstructionContext))
-                .findFirst();
+    private Optional<BillyLine> getBillyLine(final LineWrapper line) {
+        Optional<BillyLine> billyLineOptional = BillyLineContainer.get(lineEndContext).stream().filter(billyLine -> billyLine.isValid(line, billyInstructionContext)).findFirst();
 
         if (!billyLineOptional.isPresent()) {
-            billyLineOptional = lineContainer
+            billyLineOptional = BillyLineContainer
                     .get(billyInstructionContext.getLineContext())
                     .stream()
-                    .filter(billyLine -> billyLine.isValid(lineWithoutIndent, billyInstructionContext))
+                    .filter(billyLine -> billyLine.isValid(line, billyInstructionContext))
                     .findFirst();
         }
 

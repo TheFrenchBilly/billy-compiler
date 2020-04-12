@@ -1,6 +1,5 @@
 package ca.billy.erreur;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +7,6 @@ import org.junit.Test;
 import ca.billy.BillyException;
 import ca.billy.FileCompiler;
 import ca.billy.Log;
-import ca.billy.TestHelper;
 import ca.billy.line.LineWrapper;
 
 public class ErreurIntegrationTest {

@@ -1,7 +1,7 @@
 package ca.billy.expression.instruction.builder;
 
-import ca.billy.expression.instruction.MethodExpression;
-import ca.billy.expression.instruction.SimpleExpression;
+import ca.billy.expression.instruction.MethodExpressionInstruction;
+import ca.billy.expression.instruction.SimpleExpressionInstruction;
 import ca.billy.expression.type.ExpressionType;
 import ca.billy.expression.type.NotDeterminedExpressionType;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
@@ -15,7 +15,7 @@ public class NotDeterminedExpressionBuilder implements ExpressionBuilder {
     private NotDeterminedExpressionType notDeterminedExpressionType;
 
     @Override
-    public void build(SimpleExpression left, SimpleExpression right, BillyCodeInstructionArgs args) {
+    public void build(SimpleExpressionInstruction left, SimpleExpressionInstruction right, BillyCodeInstructionArgs args) {
         EnumType leftEnumType = getEnumType(left, args.getContext(), notDeterminedExpressionType.getLeft());
         EnumType rightEnumType = getEnumType(right, args.getContext(), notDeterminedExpressionType.getRight());
 
@@ -23,15 +23,17 @@ public class NotDeterminedExpressionBuilder implements ExpressionBuilder {
     }
 
     @Override
-    public void build(SimpleExpression right, BillyCodeInstructionArgs args) {
+    public void build(SimpleExpressionInstruction right, BillyCodeInstructionArgs args) {
         EnumType rightEnumType = getEnumType(right, args.getContext(), notDeterminedExpressionType.getRight());
 
         retrieveBuilder(notDeterminedExpressionType.getLeft(), rightEnumType).build(right, args);
     }
 
-    private EnumType getEnumType(SimpleExpression exp, BillyInstructionContext context, EnumType fallBackType) {
-        if (exp instanceof MethodExpression) {
-            return ((MethodExpression) exp).getType(context);
+    
+    // TODO FIXE THAT
+    private EnumType getEnumType(SimpleExpressionInstruction exp, BillyInstructionContext context, EnumType fallBackType) {
+        if (exp instanceof MethodExpressionInstruction) {
+            return ((MethodExpressionInstruction) exp).getResultType();
         }
         return fallBackType;
     }

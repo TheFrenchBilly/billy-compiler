@@ -11,22 +11,22 @@ import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.NOP;
 
 import ca.billy.bcel.utils.BranchUtils;
-import ca.billy.expression.instruction.IExpression;
+import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.VariableInstructionContext;
-import ca.billy.line.LineContainer.LineContext;
+import ca.billy.line.BillyLineContainer.LineContext;
 import lombok.Getter;
 
 public class IfInstruction extends VariableInstructionContext implements BillyCodeInstruction {
 
-    protected IExpression expression;
+    protected Expression expression;
 
     @Getter
     protected GOTO gotoHandle;
 
-    public IfInstruction(BillyInstructionContext parent, IExpression expression) {
+    public IfInstruction(BillyInstructionContext parent, Expression expression) {
         super(parent);
         this.expression = expression;
     }

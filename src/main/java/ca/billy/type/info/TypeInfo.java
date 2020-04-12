@@ -1,8 +1,8 @@
-package ca.billy.type;
+package ca.billy.type.info;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
+
+import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 
 /**
  * Class to describe a billy type.
@@ -11,7 +11,7 @@ import org.apache.bcel.generic.Type;
  *
  * @param <T> The JAVA type
  */
-interface TypeInfo<T> {
+public interface TypeInfo<T> {
     
     boolean isValidValue(String s);
         
@@ -23,5 +23,7 @@ interface TypeInfo<T> {
     
     Type getBcelType();
     
-    PUSH createPush(ConstantPoolGen cp, Object value);
+    Class<T> getJavaClass();
+    
+    void buildConst(BillyCodeInstructionArgs args, Object value);
 }

@@ -24,7 +24,7 @@ public class IntegrationTest {
 
     @AfterClass
     public static void after() {
-        TestHelper.removeGeneratedFile();
+        // TestHelper.removeGeneratedFile();
     }
 
     @Test
@@ -33,7 +33,7 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("Hello world", res);
+        assertEquals("Hello world\n", res);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("Hello world", res);
+        assertEquals("Hello world\n", res);
     }
 
     @Test
@@ -51,7 +51,26 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("Hellofalsetrue357", res);
+        assertEquals("Hellofalse\ntrue358\n", res);
+    }
+
+    @Test
+    public void testArray() throws Exception {
+        fileCompiler.compileFile("src/test/resources/integration/Array.billy");
+        fileCompiler.writeByteCode();
+
+        String res = TestHelper.run();
+        assertEquals(
+                "The string array length is 2\n"
+                        + "[ Hello world ]\n"
+                        + "Hello\n"
+                        + "false\n"
+                        + "13\n"
+                        + "3\n"
+                        + "The float array length is 2\n"
+                        + "The string array length is 3\n"
+                        + "The string array length is 0\n",
+                res);
     }
 
     @Test
@@ -60,7 +79,7 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("1 2 3 4 5 6 7 8 9 10 done", res);
+        assertEquals("1 2 3 4 5 6 7 8 9 10 done\n", res);
     }
 
     @Test
@@ -69,7 +88,16 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("10.0 9.0 8.0 7.0 6.0 5.0 4.0 3.0 2.0 1.0 done", res);
+        assertEquals("10.0 9.0 8.0 7.0 6.0 5.0 4.0 3.0 2.0 1.0 done\n", res);
+    }
+
+    @Test
+    public void testFor() throws Exception {
+        fileCompiler.compileFile("src/test/resources/integration/For.billy");
+        fileCompiler.writeByteCode();
+
+        String res = TestHelper.run();
+        assertEquals("0123456789done\n" + "10987654321done\n" + "adone\n" + "1234512345done\n", res);
     }
 
     /** We just compile for this test ! */

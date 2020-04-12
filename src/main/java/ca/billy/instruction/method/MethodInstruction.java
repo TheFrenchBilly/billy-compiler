@@ -10,6 +10,7 @@ import org.apache.bcel.generic.InstructionFactory;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.MethodGen;
 
+import ca.billy.bcel.utils.TypeUtil;
 import ca.billy.bcel.utils.stackmap.StackMapBuilder;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
@@ -33,7 +34,7 @@ public class MethodInstruction extends VariableInstructionContext {
         MethodGen mg = new MethodGen(
                 methodDefinition.getAccessFlags(), // access flags
                 methodDefinition.getReturnType(), // return type
-                methodDefinition.getArgs(), // argument types
+                TypeUtil.convertType(methodDefinition.getArgs()), // argument types
                 generateArgsName(methodDefinition.getArgs().length), // arg names
                 methodDefinition.getName(),
                 cg.getClassName(), // method, class
@@ -52,7 +53,6 @@ public class MethodInstruction extends VariableInstructionContext {
                 .build();
 
         for (BillyInstruction ins : getInstructions()) {
-            ins.valid(args.getContext());
             ((BillyCodeInstruction) ins).build(args);
         }
 

@@ -1,8 +1,9 @@
-package ca.billy.type;
+package ca.billy.type.info;
 
-import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
+
+import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 
 // TODO min, max ?
 class IntegerTypeInfo implements TypeInfo<Integer> {
@@ -36,9 +37,14 @@ class IntegerTypeInfo implements TypeInfo<Integer> {
     public Type getBcelType() {
         return Type.INT;
     }
-    
+
     @Override
-    public PUSH createPush(ConstantPoolGen cp, Object value) {
-        return new PUSH(cp, (int) value);
+    public Class<Integer> getJavaClass() {
+        return Integer.class;
+    }
+
+    @Override
+    public void buildConst(BillyCodeInstructionArgs args, Object value) {
+        args.getIl().append(new PUSH(args.getCp(), (int) value));
     }
 }

@@ -1,0 +1,29 @@
+main()
+	testOne()
+	testTwo()
+	testThree()
+
+testOne()
+	for Integer i; i < 10; i = i + 1:
+		print(i)
+	printLine("done")
+	
+	for Integer i = 10; i > 0;:
+		print(i)
+		i = i - 1
+	printLine("done")
+
+testTwo()
+	String test = "a"
+	for ; test != "b";:
+		print(test)
+		test = "b"
+	printLine("done")
+
+testThree()
+	Integer[] ints = {1,2,3,4,5}
+	for i ; ints:
+		print(i)
+	for i ; ints:
+		print(i)
+	print("done")

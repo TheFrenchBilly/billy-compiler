@@ -1,10 +1,11 @@
 package ca.billy.line.control;
 
 import ca.billy.Const;
-import ca.billy.expression.ExpressionProcessor;
-import ca.billy.instruction.BillyInstruction;
+import ca.billy.expression.Expression;
 import ca.billy.instruction.context.BillyInstructionContext;
+import ca.billy.instruction.context.VariableInstructionContext;
 import ca.billy.instruction.control.IfInstruction;
+import ca.billy.line.LineWrapper;
 import ca.billy.type.EnumType;
 
 public class IfLine extends ControlExpressionLine {
@@ -15,10 +16,10 @@ public class IfLine extends ControlExpressionLine {
     }
 
     @Override
-    public BillyInstruction createBillyInstruction(String line, BillyInstructionContext instructionContext, ExpressionProcessor expressionProcessor) {
-        int index = line.indexOf(Const.SPACE);
-        String exp = line.substring(index + 1, line.length() - 1);
+    public VariableInstructionContext createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
+        int index = line.getLine().indexOf(Const.SPACE);
+        String exp = line.getLine().substring(index + 1, line.getLine().length() - 1);
 
-        return new IfInstruction(instructionContext, expressionProcessor.buildExpression(exp, EnumType.BOOLEAN, instructionContext));
+        return new IfInstruction(instructionContext, new Expression(exp, EnumType.BOOLEAN, line.getLineNumber()));
     }
 }

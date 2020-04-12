@@ -1,11 +1,11 @@
-package ca.billy.type;
+package ca.billy.type.info;
 
-import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
+import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 
 class BooleanTypeInfo implements TypeInfo<Boolean> {
 
@@ -33,10 +33,15 @@ class BooleanTypeInfo implements TypeInfo<Boolean> {
     public Type getBcelType() {
         return Type.BOOLEAN;
     }
+    
+    @Override
+    public Class<Boolean> getJavaClass() {
+        return Boolean.class;
+    }
 
     @Override
-    public PUSH createPush(ConstantPoolGen cp, Object value) {
-        return new PUSH(cp, (boolean) value);
+    public void buildConst(BillyCodeInstructionArgs args,  Object value) {
+        args.getIl().append(new PUSH(args.getCp(), (boolean) value));
     }
 
 }

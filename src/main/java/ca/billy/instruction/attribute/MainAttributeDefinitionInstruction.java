@@ -1,16 +1,15 @@
 package ca.billy.instruction.attribute;
 
-import ca.billy.expression.instruction.IExpression;
-import ca.billy.expression.instruction.ConstExpression;
+import ca.billy.expression.Expression;
 import ca.billy.type.EnumType;
 
 public class MainAttributeDefinitionInstruction extends AttributeDefinitionInstruction {
 
-    public MainAttributeDefinitionInstruction(String name, EnumType enumType) {
-        super(name, enumType, new ConstExpression(enumType.getDefaultValue(), enumType), true);
+    public MainAttributeDefinitionInstruction(String name, EnumType enumType, int lineNumber) {
+        super(name, enumType, new Expression(enumType, lineNumber), true);
     }
 
-    public MainAttributeDefinitionInstruction(String name, EnumType enumType, IExpression expression) {
+    public MainAttributeDefinitionInstruction(String name, EnumType enumType, Expression expression) {
         super(name, enumType, expression, true);
     }
 

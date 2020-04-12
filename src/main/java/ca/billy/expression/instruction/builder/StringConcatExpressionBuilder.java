@@ -6,7 +6,7 @@ import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.Type;
 
 import ca.billy.bcel.utils.StackUtil;
-import ca.billy.expression.instruction.SimpleExpression;
+import ca.billy.expression.instruction.SimpleExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 import lombok.AllArgsConstructor;
 
@@ -17,7 +17,7 @@ public class StringConcatExpressionBuilder implements ExpressionBuilder {
     private Type leftType;
 
     @Override
-    public void build(SimpleExpression left, SimpleExpression right, BillyCodeInstructionArgs args) {
+    public void build(SimpleExpressionInstruction left, SimpleExpressionInstruction right, BillyCodeInstructionArgs args) {
         createStringBuilder(args);
         left.build(args);
         initStringBuilder(leftType, args);
@@ -25,10 +25,11 @@ public class StringConcatExpressionBuilder implements ExpressionBuilder {
         toString(args);
     }
 
+    // TODO FIXE THAT
     @Override
-    public void build(SimpleExpression right, BillyCodeInstructionArgs args) {
+    public void build(SimpleExpressionInstruction right, BillyCodeInstructionArgs args) {
         createStringBuilder(args);
-        StackUtil.swap(args.getIl(), 2, right.getType(args.getContext()).getBcelType().getSize());
+        StackUtil.swap(args.getIl(), 2, right.getResultType().getBcelType().getSize());
         initStringBuilder(leftType, args);
         appendToStringBuilder(right, args);
         toString(args);
@@ -52,7 +53,7 @@ public class StringConcatExpressionBuilder implements ExpressionBuilder {
         }
     }
 
-    private void appendToStringBuilder(SimpleExpression exp, BillyCodeInstructionArgs args) {
+    private void appendToStringBuilder(SimpleExpressionInstruction exp, BillyCodeInstructionArgs args) {
         exp.build(args);
         args.getIl().append(
                 args.getFactory().createInvoke(

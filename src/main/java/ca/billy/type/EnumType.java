@@ -1,13 +1,29 @@
 package ca.billy.type;
 
+import static ca.billy.type.info.TypeInfoFactory.getArrayTypeInfo;
+import static ca.billy.type.info.TypeInfoFactory.getTypeInfo;
+
 import java.util.stream.Stream;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
 
+import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
+import ca.billy.type.info.ArrayTypeInfo;
+import ca.billy.type.info.TypeInfo;
+
 public enum EnumType {
-    ANY(null), STRING(new StringTypeInfo()), BOOLEAN(new BooleanTypeInfo()), INTEGER(new IntegerTypeInfo()), FLOAT(new FloatTypeInfo());
+    // @formatter:off
+    ANY(null),
+    STRING(getTypeInfo(String.class)),
+    BOOLEAN(getTypeInfo(Boolean.class)),
+    INTEGER(getTypeInfo(Integer.class)),
+    FLOAT(getTypeInfo(Float.class)),
+    ANY_ARRAY(null),
+    STRING_ARRAY(getArrayTypeInfo(String.class, STRING)),
+    BOOLEAN_ARRAY(getArrayTypeInfo(Boolean.class, BOOLEAN)),
+    INTEGER_ARRAY(getArrayTypeInfo(Integer.class, INTEGER)),
+    FLOAT_ARRAY(getArrayTypeInfo(Float.class, FLOAT));
+    // @formatter:on
 
     private TypeInfo<?> typeInfo;
 
@@ -30,9 +46,9 @@ public enum EnumType {
     public Type getBcelType() {
         return typeInfo.getBcelType();
     }
-    
-    public PUSH createPush(ConstantPoolGen cp, Object value) {
-        return typeInfo.createPush(cp, value);
+
+    public void buildConst(BillyCodeInstructionArgs args, Object value) {
+        typeInfo.buildConst(args, value);
     }
 
     public boolean typeMatch(Object other) {
@@ -40,13 +56,29 @@ public enum EnumType {
             if (this == ANY || other == ANY) {
                 return true;
             }
+
+            if ((this == ANY_ARRAY && ((EnumType) other).isArray()) || (other == ANY_ARRAY && this.isArray())) {
+                return true;
+            }
         }
 
         return equals(other);
     }
 
+    public boolean isArray() {
+        return typeInfo instanceof ArrayTypeInfo;
+    }
+
+    public Type getArrayBcelType() {
+        return ((ArrayTypeInfo<?>) typeInfo).getArrayBcelType();
+    }
+
+    public EnumType getArrayType() {
+        return ((ArrayTypeInfo<?>) typeInfo).getArrayType();
+    }
+
     public static EnumType[] availableValues() {
-        return new EnumType[] { STRING, BOOLEAN, INTEGER, FLOAT };
+        return new EnumType[] { STRING, BOOLEAN, INTEGER, FLOAT, STRING_ARRAY, BOOLEAN_ARRAY, INTEGER_ARRAY, FLOAT_ARRAY };
     }
 
     public static EnumType[] availableNumerics() {

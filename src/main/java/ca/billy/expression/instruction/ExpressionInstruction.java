@@ -8,22 +8,22 @@ import ca.billy.expression.type.NotDeterminedExpressionType;
 import ca.billy.type.EnumType;
 import lombok.Getter;
 
-public class Expression implements IExpression {
+public class ExpressionInstruction implements IExpressionInstruction {
 
     @Getter
-    private SimpleExpression left;
+    private SimpleExpressionInstruction left;
 
     private List<ExpressionType> expressionTypes;
 
-    private List<SimpleExpression> rights;
+    private List<SimpleExpressionInstruction> rights;
 
-    public Expression(SimpleExpression left) {
+    public ExpressionInstruction(SimpleExpressionInstruction left) {
         this.left = left;
         expressionTypes = new ArrayList<>();
         rights = new ArrayList<>();
     }
 
-    public void add(ExpressionType expressionType, SimpleExpression right) {
+    public void add(ExpressionType expressionType, SimpleExpressionInstruction right) {
         expressionTypes.add(expressionType);
         rights.add(right);
     }

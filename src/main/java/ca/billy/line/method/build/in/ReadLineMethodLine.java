@@ -1,10 +1,11 @@
-package ca.billy.line.method;
+package ca.billy.line.method.build.in;
 
 import ca.billy.Const;
-import ca.billy.expression.ExpressionProcessor;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.method.call.ReadLineMethodCallInstruction;
+import ca.billy.line.LineWrapper;
+import ca.billy.line.method.AbstractParentheseLine;
 
 public class ReadLineMethodLine extends AbstractParentheseLine {
 
@@ -19,7 +20,7 @@ public class ReadLineMethodLine extends AbstractParentheseLine {
     }
 
     @Override
-    public BillyInstruction createBillyInstruction(String line, BillyInstructionContext instructionContext, ExpressionProcessor expressionProcessor) {
+    public BillyInstruction createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
         return new ReadLineMethodCallInstruction(false);
     }
 }

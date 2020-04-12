@@ -3,36 +3,21 @@ package ca.billy.line.method;
 import ca.billy.Const;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.line.BillyLine;
+import ca.billy.line.LineWrapper;
+import ca.billy.util.MethodUtil;
 
 // TODO MODIFY for parameters ! 
 // Expression in parameter ?
 public abstract class AbstractParentheseLine implements BillyLine {
 
     @Override
-    public boolean isValid(String line, BillyInstructionContext instructionContext) {
-        int index = line.indexOf(Const.START_PARENTHESES);
+    public boolean isValid(LineWrapper line, BillyInstructionContext instructionContext) {
+        int index = line.getLine().indexOf(Const.START_PARENTHESES);
 
-        if (index == -1 || !line.endsWith(Const.END_PARENTHESES))
+        if (index == -1 || !line.getLine().endsWith(Const.END_PARENTHESES))
             return false;
 
-        return isValidMethodName(line.substring(0, index)) && isValidParameters(extractParameters(line), instructionContext);
-    }
-
-    protected String[] extractParameters(String line) {
-        int index = line.indexOf(Const.START_PARENTHESES);
-        String[] args = line.substring(index + 1, line.length() - 1).split(Const.COMMA);
-        if (args.length == 1 && Const.EMPTY.equals(args[0])) {
-            return new String[0];
-        }
-        for (int i = 0; i < args.length; ++i) {
-            args[i] = args[i].trim();
-        }
-        return args;
-    }
-
-    protected String extractMethodName(String line) {
-        int index = line.indexOf(Const.START_PARENTHESES);
-        return line.substring(0, index);
+        return isValidMethodName(line.getLine().substring(0, index)) && isValidParameters(MethodUtil.extractParameters(line.getLine()), instructionContext);
     }
 
     private boolean isValidParameters(String[] parameters, BillyInstructionContext instructionContext) {

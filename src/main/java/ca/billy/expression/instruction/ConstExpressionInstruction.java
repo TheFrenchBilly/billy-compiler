@@ -1,15 +1,14 @@
 package ca.billy.expression.instruction;
 
-import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.type.EnumType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class VariableExpression implements SimpleExpression {
+public class ConstExpressionInstruction implements SimpleExpressionInstruction {
 
-    private String variableName;
+    private Object value;
 
     private EnumType type;
 
@@ -20,12 +19,6 @@ public class VariableExpression implements SimpleExpression {
 
     @Override
     public void build(BillyCodeInstructionArgs args) {
-        args.getContext().findVariable(variableName).buildLoad(args);
+        type.buildConst(args, value);
     }
-    
-    @Override
-    public EnumType getType(BillyInstructionContext context) {
-        return type;
-    }
-
 }

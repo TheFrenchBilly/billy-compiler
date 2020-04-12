@@ -2,22 +2,23 @@ package ca.billy.line.variable;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
-import ca.billy.expression.ExpressionProcessor;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.line.BillyLine;
+import ca.billy.line.LineWrapper;
 import ca.billy.type.EnumType;
+import ca.billy.util.VariableUtil;
 
 public class VariableDefinitionLine implements BillyLine {
 
     @Override
-    public boolean isValid(String line, BillyInstructionContext instructionContext) {
-        if (line.indexOf(Const.SPACE) == -1)
+    public boolean isValid(LineWrapper line, BillyInstructionContext instructionContext) {
+        if (line.getLine().indexOf(Const.SPACE) == -1)
             return false;
 
-        String[] s = getVariableInfo(line);
-        return EnumType.anyMatch(s[0]) && s[1].matches("[a-zA-Z]+");
+        String[] s = getVariableInfo(line.getLine());
+        return EnumType.anyMatch(s[0]) && VariableUtil.isValidName(s[1]);
     }
 
     // { Enumtype as String, The rest of the Line - Enumtype as String}
@@ -27,12 +28,12 @@ public class VariableDefinitionLine implements BillyLine {
     }
 
     @Override
-    public BillyInstruction createBillyInstruction(String line, BillyInstructionContext instructionContext, ExpressionProcessor expressionProcessor) {
-        String[] s = getVariableInfo(line);
-        if (instructionContext.isExistingVariable(s[1]))
+    public BillyInstruction createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
+        String[] s = getVariableInfo(line.getLine());
+        if (instructionContext.isExistingLocalVariable(s[1]))
             throw new BillyException("variable already define : " + s[1]);
 
-        return new VariableDefinitionInstruction(s[1], EnumType.getEnumType(s[0]));
+        return new VariableDefinitionInstruction(s[1], EnumType.getEnumType(s[0]), line.getLineNumber());
     }
 
 }

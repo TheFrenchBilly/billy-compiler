@@ -15,9 +15,20 @@ import lombok.Getter;
 // No explicit cast too
 @Getter
 public enum OperatorEnum {
-    ADITION("+", createAddition()), SUBSTRACTION("-", createNumerics("-")), MULTIPLICATION("*", createNumerics("*")), DIVISION("/", createNumerics("/")), MODULO("%",
-            createNumerics("%")), AND("&&", createBool("&&")), OR("||", createBool("||")), OR_EXCLUSIVE("^", createBool("^")), EQUALS("==",
-                    createCmp("==")), NOT_EQUALS("!=", createCmp("!=")), GREATER(">", createSmallerOrGreater(">")), SMALLER("<", createSmallerOrGreater("<"));
+    // @formatter:off
+    ADDITION("+", createAddition()),
+    SUBSTRACTION("-", createNumerics("-")),
+    MULTIPLICATION("*", createNumerics("*")),
+    DIVISION("/", createNumerics("/")),
+    MODULO("%", createNumerics("%")),
+    AND("&&", createBool("&&")),
+    OR("||", createBool("||")),
+    OR_EXCLUSIVE("^", createBool("^")),
+    EQUALS("==", createCmp("==")),
+    NOT_EQUALS("!=", createCmp("!=")),
+    GREATER(">", createSmallerOrGreater(">")), 
+    SMALLER("<", createSmallerOrGreater("<"));
+    // @formatter:on
 
     private String operator;
 
@@ -29,10 +40,6 @@ public enum OperatorEnum {
     }
 
     public ExpressionType retrieveExpressionType(EnumType left, EnumType right) {
-        if (left == EnumType.ANY || right == EnumType.ANY) {
-            return createNotDeterminedExpressionType(left, this, right);
-        }
-
         return supportedExpressionType.stream().filter(e -> e.getLeft().equals(left) && e.getRight().equals(right)).findFirst().orElseThrow(
                 () -> new BillyException("No expression for " + left.getName() + " " + operator + " " + right.getName()));
     }

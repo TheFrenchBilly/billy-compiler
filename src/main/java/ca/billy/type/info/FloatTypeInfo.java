@@ -1,8 +1,9 @@
-package ca.billy.type;
+package ca.billy.type.info;
 
-import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.Type;
+
+import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 
 class FloatTypeInfo implements TypeInfo<Float> {
 
@@ -35,10 +36,15 @@ class FloatTypeInfo implements TypeInfo<Float> {
     public Type getBcelType() {
         return Type.FLOAT;
     }
-    
+
     @Override
-    public PUSH createPush(ConstantPoolGen cp, Object value) {
-        return new PUSH(cp, (float) value);
+    public Class<Float> getJavaClass() {
+        return Float.class;
+    }
+
+    @Override
+    public void buildConst(BillyCodeInstructionArgs args, Object value) {
+        args.getIl().append(new PUSH(args.getCp(), (float) value));
     }
 
 }

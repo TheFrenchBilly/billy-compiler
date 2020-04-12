@@ -4,7 +4,7 @@ import org.apache.bcel.Const;
 import org.apache.bcel.classfile.Field;
 import org.apache.bcel.generic.FieldGen;
 
-import ca.billy.expression.instruction.IExpression;
+import ca.billy.expression.Expression;
 import ca.billy.instruction.modifiers.AccessModifiers;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.type.EnumType;
@@ -17,7 +17,7 @@ public abstract class AttributeDefinitionInstruction extends VariableDefinitionI
 
     private boolean isStatic;
 
-    public AttributeDefinitionInstruction(String name, EnumType enumType, IExpression expression, boolean isStatic) {
+    public AttributeDefinitionInstruction(String name, EnumType enumType, Expression expression, boolean isStatic) {
         super(name, enumType, expression);
         accessModifiers = AccessModifiers.PUBLIC;
         this.isStatic = isStatic;

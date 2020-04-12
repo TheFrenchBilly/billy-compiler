@@ -16,34 +16,43 @@ public class LineWrapper {
     @Getter
     private int lineNumber;
 
-    public LineWrapper(String line) {
-        this.line = removeComment(line);
-        lineNumber = ++lineCounter;
+    @Getter
+    private int indent;
 
+    public LineWrapper(String line) {
+        lineNumber = ++lineCounter;
         if (Log.isEnabled()) {
-            print();
+            print(line);
         }
+        
+        line = removeComment(line);
+        this.line = line.substring(indent = getIndent(line)).trim();
+    }
+    
+    public LineWrapper(String line, int lineNumber) {
+        this.line = line;
+        this.lineNumber = lineNumber;
     }
 
     public boolean isEmpty() {
-        return line.trim().length() == 0;
+        return line.length() == 0;
+    }
+    
+    private String removeComment(String line) {
+        int index = line.indexOf(Const.COMMENT);
+        return index == -1 ? line : index == 0 ? Const.EMPTY : line.substring(0, index - 1);
     }
 
-    public int getIndent() {
+    private int getIndent(String line) {        
         int index = 0;
-        while (INDENT == line.charAt(index))
+        while (line.length() != index && INDENT == line.charAt(index))
             ++index;
 
         return index;
     }
-
-    private void print() {
-        Log.log(lineNumber + ":" + removeComment(line));
-    }
-
-    private String removeComment(String line) {
-        int index = line.indexOf(Const.COMMENT);
-        return index == -1 ? line : index == 0 ? Const.EMPTY : line.substring(0, index - 1);
+   
+    private void print(String line) {
+        Log.log(lineNumber + ":" + line);
     }
 
     /** Reset the lineCounter. Only used in test. */
