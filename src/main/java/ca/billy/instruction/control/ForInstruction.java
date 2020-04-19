@@ -1,16 +1,16 @@
 package ca.billy.instruction.control;
 
 import org.apache.bcel.Const;
-import org.apache.bcel.generic.BranchInstruction;
 import org.apache.bcel.generic.GOTO;
 import org.apache.bcel.generic.InstructionFactory;
 import org.apache.bcel.generic.NOP;
 
-import ca.billy.bcel.utils.BranchUtils;
+import ca.billy.bcel.utils.Branch;
 import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
+import ca.billy.instruction.context.TmpContext;
 import ca.billy.instruction.context.VariableInstructionContext;
 
 public class ForInstruction extends VariableInstructionContext implements BillyCodeInstruction {
@@ -32,16 +32,19 @@ public class ForInstruction extends VariableInstructionContext implements BillyC
     @Override
     public void build(BillyCodeInstructionArgs args) {
         BillyCodeInstructionArgs forArgs = args.toBuilder().context(this).build();
-        BranchInstruction endHandle = InstructionFactory.createBranchInstruction(Const.IFNE, null);
-        GOTO gotoHandle = new GOTO(null);
+        TmpContext tmpContext = new TmpContext(args.getContext());
+        BillyCodeInstructionArgs tmpArgs = args.toBuilder().context(tmpContext).build();
+        Branch endBranch = new Branch(InstructionFactory.createBranchInstruction(Const.IFNE, null), forArgs);
+        Branch gotoBranch = new Branch(new GOTO(null), tmpArgs);
         
         if (initInstruction != null) {
-            getInstructions().add(initInstruction);
+            add(initInstruction);
+            tmpContext.add(initInstruction);
             initInstruction.build(forArgs);
         }
 
-        BranchUtils.createBranch(gotoHandle, forArgs);
-        endHandle.setTarget(args.getIl().append(new NOP()));
+        gotoBranch.buildBranch();
+        endBranch.setTarget(args.getIl().append(new NOP()));
         
         for (BillyInstruction ins : getInstructions()) {
             if (initInstruction == null || initInstruction != ins) {
@@ -53,10 +56,10 @@ public class ForInstruction extends VariableInstructionContext implements BillyC
             incrementInstruction.build(forArgs);
         }
         
-        gotoHandle.setTarget(args.getIl().append(new NOP()));
+        gotoBranch.setTarget(args.getIl().append(new NOP()));
         
         expression.build(forArgs);
-        BranchUtils.createBranch(endHandle, forArgs);  
+        endBranch.buildBranch();
     }
 
 }

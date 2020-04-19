@@ -1,16 +1,8 @@
 // Tic tac toe in billy 0.0.1
-String choix
+String choice
 
 // Array will have been good ...
-String one
-String two
-String three
-String four
-String five
-String six
-String seven
-String eight
-String nine
+String[] grid
 
 String state // D -> Draw, X -> X win, O -> O win 
 String player // X or O
@@ -22,10 +14,10 @@ main()
 ticTacToe()
 	reset()
 	menu()
-	if choix == "1":
+	if choice == "1":
 		play()
 		ticTacToe()
-	elseif choix != "2":
+	elseif choice != "2":
 		printLine("Invalid choice")
 		ticTacToe()
 	
@@ -50,24 +42,24 @@ registerPlayerInput()
 	print("Player " + player + " ->")
 	String choice = readLine()
 	// Use this condition because the priority of operation does not exist ...
-	if choice + one == "11":
-		one = player
-	elseif choice + two == "22":
-		two = player
-	elseif choice + three == "33":
-		three = player
-	elseif choice + four == "44":
-		four = player
-	elseif choice + five == "55":
-		five = player
-	elseif choice + six == "66":
-		six = player
-	elseif choice + seven == "77":
-		seven = player
-	elseif choice + eight == "88":
-		eight = player
-	elseif choice + nine == "99":
-		nine = player
+	if choice + grid[0] == "11":
+		grid[0] = player
+	elseif choice + grid[1] == "22":
+		grid[1] = player
+	elseif choice + grid[2] == "33":
+		grid[2] = player
+	elseif choice + grid[3] == "44":
+		grid[3] = player
+	elseif choice + grid[4] == "55":
+		grid[4] = player
+	elseif choice + grid[5] == "66":
+		grid[5] = player
+	elseif choice + grid[6] == "77":
+		grid[6] = player
+	elseif choice + grid[7] == "88":
+		grid[7] = player
+	elseif choice + grid[8] == "99":
+		grid[8] = player
 	else:
 		printLine("Invalid Input")
 		registerPlayerInput()
@@ -82,37 +74,37 @@ updateState()
 
 checkWin()
 	String value = player + player + player
-	if one + two + three == value:
+	if grid[0] + grid[1] + grid[2] == value:
 		state = player
-	elseif four + five + six == value:
+	elseif grid[3] + grid[4] + grid[5] == value:
 		state = player
-	elseif seven + eight + nine == value:
+	elseif grid[6] + grid[7] + grid[8] == value:
 		state = player
-	elseif one + four + seven == value:
+	elseif grid[0] + grid[3] + grid[6] == value:
 		state = player
-	elseif two + five + eight == value:
+	elseif grid[1] + grid[4] + grid[7] == value:
 		state = player
-	elseif three + six + nine == value:
+	elseif grid[2] + grid[5] + grid[8] == value:
 		state = player
-	elseif one + five + nine == value:
+	elseif grid[0] + grid[4] + grid[8] == value:
 		state = player
-	elseif three + five + seven == value:
+	elseif grid[2] + grid[4] + grid[6] == value:
 		state = player
 	
 menu()
 	printLine("Welcome to the billy tic tac toe!")
 	printLine("1 - Play")	
-	printLine("2 - exit")
+	printLine("2 - Exit")
 	print("Votre choix ->")
-	choix = readLine()
+	choice = readLine()
 
 printTacToeToe()
 	printLine("")
-	printLine("  " + one + " | " + two + " | " + three)
+	printLine("  " + grid[0] + " | " + grid[1] + " | " + grid[2])
 	printLine(" ___|___|___ " )
-	printLine("  " + four + " | " + five + " | " + six)
+	printLine("  " + grid[3] + " | " + grid[4] + " | " + grid[5])
 	printLine(" ___|___|___ " )
-	printLine("  " + seven + " | " + eight + " | " + nine)
+	printLine("  " + grid[6] + " | " + grid[7] + " | " + grid[8])
 	printLine("    |   |  " )
 	printLine("")
 	
@@ -124,15 +116,7 @@ printResult()
 		printLine("The " + state +" win!")
 
 reset()
-	one = "1"
-	two = "2"
-	three = "3"
-	four = "4"
-	five = "5"                
-	six = "6" 
-	seven = "7"
-	eight = "8"
-	nine = "9"
+	grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"}
 	state = ""
 	player = "X"
 	nbTurn = 0

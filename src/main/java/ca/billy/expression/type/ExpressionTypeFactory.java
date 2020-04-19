@@ -2,7 +2,6 @@ package ca.billy.expression.type;
 
 import org.apache.bcel.generic.Type;
 
-import ca.billy.expression.OperatorEnum;
 import ca.billy.expression.instruction.builder.BinaryExpressionBuilder;
 import ca.billy.expression.instruction.builder.CmpExpressionBuilder;
 import ca.billy.expression.instruction.builder.StringConcatExpressionBuilder;
@@ -43,13 +42,4 @@ public class ExpressionTypeFactory {
         expressionType.builder = new CmpExpressionBuilder(op, type.getBcelType());
         return expressionType;
     }
-
-    public static NotDeterminedExpressionType createNotDeterminedExpressionType(EnumType left, OperatorEnum operatorEnum, EnumType right) {
-        NotDeterminedExpressionType expressionType = new NotDeterminedExpressionType();
-        expressionType.left = left;
-        expressionType.operatorEnum = operatorEnum;
-        expressionType.right = right;
-        return expressionType;
-    }
-
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.billy.expression.type.ExpressionType;
-import ca.billy.expression.type.NotDeterminedExpressionType;
 import ca.billy.type.EnumType;
 import lombok.Getter;
 
@@ -40,11 +39,6 @@ public class ExpressionInstruction implements IExpressionInstruction {
     public void build(BillyCodeInstructionArgs args) {
         expressionTypes.get(0).getBuilder().build(left, rights.get(0), args);
         for (int i = 1; i < expressionTypes.size(); ++i) {
-            
-            if (expressionTypes.get(i) instanceof NotDeterminedExpressionType) {
-                ((NotDeterminedExpressionType) expressionTypes.get(i)).setLeft(expressionTypes.get(i - 1).getOut());
-            }
-
             expressionTypes.get(i).getBuilder().build(rights.get(i), args);
         }
     }

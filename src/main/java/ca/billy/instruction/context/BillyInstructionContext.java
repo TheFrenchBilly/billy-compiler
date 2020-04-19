@@ -13,7 +13,7 @@ public interface BillyInstructionContext extends BillyInstruction {
     
     public BillyInstructionContext getParent();
     
-    List<BillyInstruction> getIntructions();
+    List<BillyInstruction> getInstructions();
     
     void add(BillyInstruction instruction);
     
@@ -27,7 +27,7 @@ public interface BillyInstructionContext extends BillyInstruction {
     
     VariableDefinitionInstruction findLocalVariable(String variableName);
     
-    List<? extends VariableDefinitionInstruction> getVariables();
+    List<? extends VariableDefinitionInstruction> getFrameVariables();
     
     boolean isExistingVariable(String variableName);
     

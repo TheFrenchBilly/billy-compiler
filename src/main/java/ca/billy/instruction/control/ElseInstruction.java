@@ -23,7 +23,7 @@ public class ElseInstruction extends VariableInstructionContext implements Billy
         }
         
         InstructionHandle nopInstruction = args.getIl().append(new NOP());
-        IfInstruction.getLastIf(args.getContext(), this).forEach(IfInstruction -> IfInstruction.getGotoHandle().setTarget(nopInstruction));
+        IfInstruction.getLastIf(args.getContext(), this).forEach(IfInstruction -> IfInstruction.getGotoBranch().setTarget(nopInstruction));
     }
 
 }

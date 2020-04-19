@@ -10,7 +10,7 @@ import ca.billy.expression.instruction.SimpleExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 import lombok.AllArgsConstructor;
 
-// FIXME create a StrinBuilder for each concat, probably can be better
+// FIXME create a StringBuilder for each concat, probably can be better
 @AllArgsConstructor
 public class StringConcatExpressionBuilder implements ExpressionBuilder {
 
@@ -25,7 +25,6 @@ public class StringConcatExpressionBuilder implements ExpressionBuilder {
         toString(args);
     }
 
-    // TODO FIXE THAT
     @Override
     public void build(SimpleExpressionInstruction right, BillyCodeInstructionArgs args) {
         createStringBuilder(args);

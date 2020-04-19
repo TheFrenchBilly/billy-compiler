@@ -6,9 +6,7 @@ import org.apache.bcel.generic.LocalVariableGen;
 
 import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
-import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
-import ca.billy.instruction.method.MethodInstruction;
 import ca.billy.type.EnumType;
 import lombok.Getter;
 
@@ -23,7 +21,7 @@ public class VariableDefinitionInstruction implements BillyCodeInstruction {
     protected Expression expression;
 
     private LocalVariableGen lg;
-
+    
     public VariableDefinitionInstruction(String name, EnumType enumType, int lineNumber) {
         super();
         this.name = name;
@@ -45,30 +43,8 @@ public class VariableDefinitionInstruction implements BillyCodeInstruction {
         lg.setStart(args.getIl().append(InstructionFactory.createStore(enumType.getBcelType(), lg.getIndex())));
     }
 
-    private int findIndex(BillyInstructionContext billyInstructionContext) {
-        int index = 0;
-        for (BillyInstruction ins : billyInstructionContext.getIntructions()) {
-            if (ins == this) {
-                break;
-            }
-            if (ins instanceof VariableDefinitionInstruction) {
-                ++index;
-            }
-        }
-
-        while (!(billyInstructionContext instanceof MethodInstruction)) {
-            billyInstructionContext = billyInstructionContext.getParent();
-        }
-        
-        for (BillyInstruction ins : billyInstructionContext.getIntructions()) {
-            if (ins == this) {
-                break;
-            }
-            if (ins instanceof VariableDefinitionInstruction) {
-                ++index;
-            }
-        }
-        return index;
+    private int findIndex(BillyInstructionContext billyInstructionContext) {            
+        return billyInstructionContext.getFrameVariables().size();
     }
 
     public void buildStore(BillyCodeInstructionArgs args) {
@@ -81,11 +57,11 @@ public class VariableDefinitionInstruction implements BillyCodeInstruction {
 
     public Integer getIndex() {
         if (lg == null) {
-            System.out.println("null");
+            return null;
         }
         return lg.getIndex();
     }
-
+    
     // TODO add end to every variable ? does it really change something ? 
     // never use for now
     public void setEnd(InstructionHandle end) {

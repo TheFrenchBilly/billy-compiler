@@ -2,13 +2,14 @@
 
 Because i always wanted to create a compiler and now i can say that I did it. The compiler is definitely not perfect and doesn't probably look like the others compilers. 
 
-The "__billy__" language does not support a lot of stuff but just enough to do a tic-tac-toe in console. For example, the language don't have class, loop, operation priority and function parameter. But you can still use recursivity to fake loop. And there is no NULL !
+The "__billy__" language does not support a lot of stuff but just enough to do a tic-tac-toe in console. For example, the language don't have class, operation priority and function parameter. But you can still use recursivity. And there is no NULL !
 
 ```
 Integer i	
 
 main()
 	loop()
+	classicLoop()
 	
 loop()
 	if i < 100:
@@ -17,7 +18,11 @@ loop()
 		loop()
 	elseif true:
 		printLine("done")
-
+	
+classicLoop()
+	for Integer i = 1; i < 101;i = i + 1:
+		print(i + " ")
+	printLine("done")
 ```
 
 For more billy code example see the folder __"src/test/resources/integration/"__. The code for the tic-tac-toe is there.

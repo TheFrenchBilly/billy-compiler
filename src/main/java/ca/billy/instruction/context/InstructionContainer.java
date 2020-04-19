@@ -58,7 +58,7 @@ public class InstructionContainer implements BillyInstructionContext {
     }
 
     @Override
-    public List<BillyInstruction> getIntructions() {
+    public List<BillyInstruction> getInstructions() {
         List<BillyInstruction> list = Arrays.asList(mainInstruction);
         list.addAll(staticMethods);
         return list;
@@ -70,8 +70,8 @@ public class InstructionContainer implements BillyInstructionContext {
     }
 
     @Override
-    public List<? extends VariableDefinitionInstruction> getVariables() {
-        return staticAttributes;
+    public List<? extends VariableDefinitionInstruction> getFrameVariables() {
+        return new ArrayList<>();
     }
 
     @Override

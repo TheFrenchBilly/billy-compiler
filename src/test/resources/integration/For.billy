@@ -1,9 +1,10 @@
 main()
-	testOne()
-	testTwo()
-	testThree()
-
-testOne()
+	testFor()
+	testForTwo()
+	testForEach()
+	testForEachTwo()
+	
+testFor()
 	for Integer i; i < 10; i = i + 1:
 		print(i)
 	printLine("done")
@@ -13,17 +14,25 @@ testOne()
 		i = i - 1
 	printLine("done")
 
-testTwo()
+testForTwo()
 	String test = "a"
 	for ; test != "b";:
+		String t = test
 		print(test)
 		test = "b"
 	printLine("done")
-
-testThree()
+	
+testForEach()
+	for f; {1.0, 2.0, 3.0, 4.0, 5.0, 6.0}:
+		if f % 2.0 == 0f:
+			print(f)
+	printLine("done")
+		
+testForEachTwo()
 	Integer[] ints = {1,2,3,4,5}
 	for i ; ints:
-		print(i)
-	for i ; ints:
-		print(i)
-	print("done")
+		String t = i + "-"
+		print(t)
+		for i ; ints:
+			print(i)
+		print(" ")

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.bcel.Const;
-import org.apache.bcel.generic.BranchInstruction;
 import org.apache.bcel.generic.FCMPG;
 import org.apache.bcel.generic.FCMPL;
 import org.apache.bcel.generic.GOTO;
@@ -15,7 +14,7 @@ import org.apache.bcel.generic.ReferenceType;
 import org.apache.bcel.generic.Type;
 
 import ca.billy.BillyException;
-import ca.billy.bcel.utils.BranchUtils;
+import ca.billy.bcel.utils.Branch;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 import lombok.AllArgsConstructor;
 
@@ -48,15 +47,14 @@ public class CmpExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private void createCmp(BillyCodeInstructionArgs args) {
-        GOTO gotoInstruction = new GOTO(null);
-        BranchInstruction branch = InstructionFactory.createBranchInstruction(getOperation(args), null);
-
-        BranchUtils.createBranch(branch, args);
-
+        Branch gotoBranch = new Branch(new GOTO(null), args, Type.BOOLEAN);
+        Branch cmpBranch = new Branch(InstructionFactory.createBranchInstruction(getOperation(args), null), args);
+        
+        cmpBranch.buildBranch();
         args.getIl().append(new ICONST(1));
-        BranchUtils.createBranch(gotoInstruction, args, Type.BOOLEAN);
-        branch.setTarget(args.getIl().append(new ICONST(0)));
-        gotoInstruction.setTarget(args.getIl().append(new NOP()));
+        gotoBranch.buildBranch();
+        cmpBranch.setTarget(args.getIl().append(new ICONST(0)));
+        gotoBranch.setTarget(args.getIl().append(new NOP()));
     }
 
     private short getOperation(BillyCodeInstructionArgs args) {
