@@ -14,11 +14,11 @@ import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
-import ca.billy.instruction.context.VariableInstructionContext;
+import ca.billy.instruction.context.CodeInstructionContext;
 import ca.billy.line.BillyLineContainer.LineContext;
 import lombok.Getter;
 
-public class IfInstruction extends VariableInstructionContext implements BillyCodeInstruction {
+public class IfInstruction extends CodeInstructionContext implements BillyCodeInstruction {
 
     protected Expression expression;
 

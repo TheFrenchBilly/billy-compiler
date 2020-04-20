@@ -14,13 +14,13 @@ import ca.billy.expression.instruction.VariableExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
+import ca.billy.instruction.context.CodeInstructionContext;
 import ca.billy.instruction.context.TmpContext;
-import ca.billy.instruction.context.VariableInstructionContext;
 import ca.billy.instruction.method.call.ArrayLengthMethodCallInstruction;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.type.EnumType;
 
-public class ForEachInstruction extends VariableInstructionContext implements BillyCodeInstruction {
+public class ForEachInstruction extends CodeInstructionContext implements BillyCodeInstruction {
 
     private String variableName;
 

@@ -7,7 +7,7 @@ import org.junit.Test;
 import ca.billy.BillyException;
 import ca.billy.FileCompiler;
 import ca.billy.Log;
-import ca.billy.line.LineWrapper;
+import ca.billy.util.LineUtil;
 
 public class ErreurIntegrationTest {
     
@@ -16,7 +16,7 @@ public class ErreurIntegrationTest {
     @Before
     public void setup() {
         Log.enable();
-        LineWrapper.reset();
+        LineUtil.resetLineNumber();
         fileCompiler = new FileCompiler();
     }
     

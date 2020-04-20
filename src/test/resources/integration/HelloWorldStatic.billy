@@ -2,7 +2,7 @@ main()
 	print("Hello")
 	space()
 	world()
- 
+
 space()
 	print(" ")
 

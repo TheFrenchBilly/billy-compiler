@@ -70,7 +70,7 @@ public class InstructionContainer implements BillyInstructionContext {
     }
 
     @Override
-    public List<? extends VariableDefinitionInstruction> getFrameVariables() {
+    public List<EnumType> getFrameVariables() {
         return new ArrayList<>();
     }
 

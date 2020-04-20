@@ -12,5 +12,4 @@ public class MainInstruction extends MethodInstruction {
     public static MethodDefinition main() {
         return new MethodDefinition("main").withArgs(new EnumType[] { EnumType.STRING_ARRAY }).setStatic();
     }
-
 }

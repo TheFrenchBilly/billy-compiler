@@ -29,7 +29,7 @@ public class Branch {
 
     public void setTarget(InstructionHandle target) {
         branch.setTarget(target);
-        locals = args.getContext().getFrameVariables().stream().map(v -> v.getEnumType().getBcelType()).toArray(Type[]::new);
+        locals = args.getContext().getFrameVariables().stream().map(t -> t.getBcelType()).toArray(Type[]::new);
     }
 
     public void buildBranch() {

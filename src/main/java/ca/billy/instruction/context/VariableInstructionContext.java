@@ -3,11 +3,13 @@ package ca.billy.instruction.context;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.method.MethodDefinition;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.line.BillyLineContainer.LineContext;
+import ca.billy.type.EnumType;
 import lombok.Getter;
 
 public abstract class VariableInstructionContext implements BillyInstructionContext {
@@ -29,7 +31,7 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
     }
 
     @Override
-    public List<VariableDefinitionInstruction> getFrameVariables() {
+    public List<EnumType> getFrameVariables() {
         List<VariableDefinitionInstruction> variables = new ArrayList<>();
 
         BillyInstructionContext context = this;
@@ -44,8 +46,8 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
             context = context.getParent();
         }
 
-        variables.sort(Comparator.comparing(VariableDefinitionInstruction::getIndex));
-        return variables;
+        return variables.stream().sorted(Comparator.comparing(VariableDefinitionInstruction::getIndex)).map(VariableDefinitionInstruction::getEnumType).collect(
+                Collectors.toList());
     }
 
     @Override

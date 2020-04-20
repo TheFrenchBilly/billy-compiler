@@ -56,10 +56,10 @@ public class VariableInstructionContextTest {
     }
 
     private void valid(VariableInstructionContextTestImpl context, EnumType... expectedTypes) {
-        List<VariableDefinitionInstruction> res = context.getFrameVariables();
+        List<EnumType> res = context.getFrameVariables();
 
         Assert.assertEquals(expectedTypes.length, res.size());
-        Assert.assertArrayEquals(expectedTypes, res.stream().map(VariableDefinitionInstruction::getEnumType).toArray());
+        Assert.assertArrayEquals(expectedTypes, res.stream().toArray());
     }
 
     private void addVariable(VariableInstructionContextTestImpl context, EnumType type, Integer index) {

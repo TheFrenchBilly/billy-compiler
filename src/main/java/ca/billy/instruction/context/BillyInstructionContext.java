@@ -6,6 +6,7 @@ import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.method.MethodDefinition;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.line.BillyLineContainer.LineContext;
+import ca.billy.type.EnumType;
 
 // TODO local method, but that means that variable can have the same name
 // I don't think that the actual generate bytecode support that
@@ -27,7 +28,7 @@ public interface BillyInstructionContext extends BillyInstruction {
     
     VariableDefinitionInstruction findLocalVariable(String variableName);
     
-    List<? extends VariableDefinitionInstruction> getFrameVariables();
+    List<EnumType> getFrameVariables();
     
     boolean isExistingVariable(String variableName);
     

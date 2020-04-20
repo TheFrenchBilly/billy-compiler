@@ -8,7 +8,8 @@ main()
 	printLine(ints[3])
 	ints[3] = 3
 	printLine(ints[3])
-	floats =  { 12f, 0.1}
+	floats =  Float[2]
+	printLine(floats)
 	printLine("The float array length is " + arrayLength(floats))
 	Integer length = arrayLength({"Hello", "world", "!"})
 	printLine("The string array length is " + length)

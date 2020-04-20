@@ -9,7 +9,7 @@ import org.junit.Test;
 import ca.billy.FileCompiler;
 import ca.billy.Log;
 import ca.billy.TestHelper;
-import ca.billy.line.LineWrapper;
+import ca.billy.util.LineUtil;
 
 public class IntegrationTest {
 
@@ -18,7 +18,7 @@ public class IntegrationTest {
     @Before
     public void setup() {
         Log.enable();
-        LineWrapper.reset();
+        LineUtil.resetLineNumber();
         fileCompiler = new FileCompiler();
     }
 
@@ -67,6 +67,7 @@ public class IntegrationTest {
                         + "false\n"
                         + "13\n"
                         + "3\n"
+                        + "[ 0.0 0.0 ]\n"
                         + "The float array length is 2\n"
                         + "The string array length is 3\n"
                         + "The string array length is 0\n",

@@ -1,6 +1,8 @@
 package ca.billy.type.info;
 
 import java.lang.reflect.Array;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.bcel.generic.ArrayType;
 import org.apache.bcel.generic.InstructionConst;
@@ -16,7 +18,7 @@ import lombok.AllArgsConstructor;
 public class ArrayTypeInfo<T extends Object> implements TypeInfo<T[]> {
 
     private TypeInfo<T> subTypeInfo;
-    
+
     private EnumType subEnumType;
 
     @Override
@@ -32,10 +34,10 @@ public class ArrayTypeInfo<T extends Object> implements TypeInfo<T[]> {
                     }
                 }
             }
-
             return true;
         }
-        return false;
+
+        return s.matches(getFilledDefaultRegex());
     }
 
     @SuppressWarnings("unchecked")
@@ -48,6 +50,17 @@ public class ArrayTypeInfo<T extends Object> implements TypeInfo<T[]> {
     @Override
     public T[] getValue(String value) {
         value = value.trim();
+
+        Matcher m = Pattern.compile(getFilledDefaultRegex()).matcher(value);
+        if (m.find()) {
+            Integer size = Integer.parseInt(m.group(1));
+            T[] values = (T[]) Array.newInstance(subTypeInfo.getJavaClass(), size);
+            for (int i = 0; i < size; ++i) {
+                values[i] = subTypeInfo.getDefaultValue();
+            }
+            return values;
+        }
+
         String[] valuesString = value.substring(1, value.length() - 1).split(Const.COMMA);
         if (valuesString.length == 1 && valuesString[0].trim().length() == 0) {
             return getDefaultValue();
@@ -55,8 +68,7 @@ public class ArrayTypeInfo<T extends Object> implements TypeInfo<T[]> {
 
         T[] values = (T[]) Array.newInstance(subTypeInfo.getJavaClass(), valuesString.length);
         for (int i = 0; i < valuesString.length; ++i) {
-            T f = subTypeInfo.getValue(valuesString[i].trim());
-            values[i] = f;
+            values[i] = subTypeInfo.getValue(valuesString[i].trim());
         }
         return values;
     }
@@ -95,10 +107,14 @@ public class ArrayTypeInfo<T extends Object> implements TypeInfo<T[]> {
     public Type getArrayBcelType() {
         return subTypeInfo.getBcelType();
     }
-    
+
     /** Get the type of the element in the array */
     public EnumType getArrayType() {
         return subEnumType;
+    }
+
+    private String getFilledDefaultRegex() {
+        return subTypeInfo.getName() + "\\" + Const.START_SQUARE_BRACKETS + "(\\d+)\\" + Const.END_SQUARE_BRACKETS;
     }
 
 }
