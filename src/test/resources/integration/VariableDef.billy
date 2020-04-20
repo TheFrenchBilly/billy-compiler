@@ -1,17 +1,19 @@
 Boolean c
-Integer i = 12 + 345
 	
 printFalse()
 	Boolean b = true && true
 	b = false
-	print(b)
+	printLine(b)
 	
 printTrue()
-	c = i == 357 || false || c
+	c = i == 358 || false || c
 	print(c)
 
 main()
+	i = i + 1
 	print("Hello")
 	printFalse()
 	printTrue()
 	print(i)
+	
+Integer i = 12 + 345

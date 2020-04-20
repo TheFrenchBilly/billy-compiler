@@ -1,5 +1,9 @@
 package ca.billy.instruction.method;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.bcel.classfile.Attribute;
 import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.Method;
@@ -10,12 +14,14 @@ import org.apache.bcel.generic.InstructionFactory;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.MethodGen;
 
+import ca.billy.bcel.utils.TypeUtil;
 import ca.billy.bcel.utils.stackmap.StackMapBuilder;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.VariableInstructionContext;
+import ca.billy.type.EnumType;
 import lombok.Getter;
 
 public class MethodInstruction extends VariableInstructionContext {
@@ -33,7 +39,7 @@ public class MethodInstruction extends VariableInstructionContext {
         MethodGen mg = new MethodGen(
                 methodDefinition.getAccessFlags(), // access flags
                 methodDefinition.getReturnType(), // return type
-                methodDefinition.getArgs(), // argument types
+                TypeUtil.convertType(methodDefinition.getArgs()), // argument types
                 generateArgsName(methodDefinition.getArgs().length), // arg names
                 methodDefinition.getName(),
                 cg.getClassName(), // method, class
@@ -52,7 +58,6 @@ public class MethodInstruction extends VariableInstructionContext {
                 .build();
 
         for (BillyInstruction ins : getInstructions()) {
-            ins.valid(args.getContext());
             ((BillyCodeInstruction) ins).build(args);
         }
 
@@ -64,7 +69,7 @@ public class MethodInstruction extends VariableInstructionContext {
         mg.removeNOPs();
 
         Method m = mg.getMethod();
-        StackMap stackMap = stackMapBuilder.build();
+        StackMap stackMap = stackMapBuilder.build(TypeUtil.convertType(methodDefinition.getArgs()));
         if (stackMap.getLength() > 0) {
             Code code = m.getCode();
             Attribute[] oldAttributes = code.getAttributes();
@@ -85,6 +90,11 @@ public class MethodInstruction extends VariableInstructionContext {
             s[i] = "args" + i.toString();
         }
         return s;
+    }
+
+    @Override
+    public List<EnumType> getFrameVariables() {
+        return Stream.concat(Stream.of(methodDefinition.getArgs()), super.getFrameVariables().stream()).collect(Collectors.toList());
     }
 
 }

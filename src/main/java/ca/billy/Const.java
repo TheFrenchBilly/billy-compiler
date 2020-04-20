@@ -9,8 +9,13 @@ public class Const {
     public final static String PRINT = "print";
     public final static String PRINT_LINE = "printLine";
     public final static String READ_LINE = "readLine";
+    public final static String ARRAY_LENGTH_LINE = "arrayLength";
     public final static String START_PARENTHESES = "(";
     public final static String END_PARENTHESES = ")";
+    public final static String START_CURLY_BRACKETS = "{";
+    public final static String END_CURLY_BRACKETS = "}";
+    public final static String START_SQUARE_BRACKETS = "[";
+    public final static String END_SQUARE_BRACKETS = "]";
     public final static String COMMA = ",";
     public final static String QUOTE = "\"";
     public final static String MAIN = "main";;

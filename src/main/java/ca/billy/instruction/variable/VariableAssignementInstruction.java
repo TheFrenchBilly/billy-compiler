@@ -1,26 +1,33 @@
 package ca.billy.instruction.variable;
 
-import ca.billy.expression.instruction.IExpression;
-import ca.billy.instruction.AlwaysValidBillyInstruction;
+import ca.billy.BillyException;
+import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
 
 // Work for attribut
-public class VariableAssignementInstruction implements BillyCodeInstruction, AlwaysValidBillyInstruction {
+public class VariableAssignementInstruction implements BillyCodeInstruction {
 
     private String name;
 
-    private IExpression expression;
+    private String expressionString;
 
-    public VariableAssignementInstruction(String name, IExpression expression) {
+    private int lineNumber;
+
+    public VariableAssignementInstruction(String name, String expressionString, int lineNumber) {
         super();
         this.name = name;
-        this.expression = expression;
+        this.expressionString = expressionString;
+        this.lineNumber = lineNumber;
     }
 
     @Override
     public void build(BillyCodeInstructionArgs args) {
-        expression.build(args);
-        args.getContext().findVariable(name).buildStore(args);
+        VariableDefinitionInstruction variableDefinitionInstruction = args.getContext().findVariable(name);
+        if (variableDefinitionInstruction == null)
+            throw new BillyException("variable not define : " + name, lineNumber);
+
+        new Expression(expressionString, variableDefinitionInstruction.getEnumType(), lineNumber).build(args);
+        variableDefinitionInstruction.buildStore(args);
     }
 
 }

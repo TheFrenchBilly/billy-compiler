@@ -1,0 +1,22 @@
+Integer[] ints = {12, 29, 0, 13}
+
+main()
+	testPrintArray()
+	Boolean[] bools = {true, true, false}
+	Float[] floats
+	printLine(bools[2])
+	printLine(ints[3])
+	ints[3] = 3
+	printLine(ints[3])
+	floats =  Float[2]
+	printLine(floats)
+	printLine("The float array length is " + arrayLength(floats))
+	Integer length = arrayLength({"Hello", "world", "!"})
+	printLine("The string array length is " + length)
+	printLine("The string array length is " + arrayLength({}))
+
+testPrintArray()
+	String[] strings = {"Hello", "world"}
+	printLine("The string array length is " + arrayLength(strings))
+	printLine(strings)
+	printLine(strings[0])

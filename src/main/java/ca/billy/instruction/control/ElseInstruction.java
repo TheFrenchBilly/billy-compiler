@@ -6,9 +6,9 @@ import org.apache.bcel.generic.NOP;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
-import ca.billy.instruction.context.VariableInstructionContext;
+import ca.billy.instruction.context.CodeInstructionContext;
 
-public class ElseInstruction extends VariableInstructionContext implements BillyCodeInstruction {
+public class ElseInstruction extends CodeInstructionContext implements BillyCodeInstruction {
 
     public ElseInstruction(BillyInstructionContext parent) {
         super(parent);
@@ -23,7 +23,7 @@ public class ElseInstruction extends VariableInstructionContext implements Billy
         }
         
         InstructionHandle nopInstruction = args.getIl().append(new NOP());
-        IfInstruction.getLastIf(args.getContext(), this).forEach(IfInstruction -> IfInstruction.getGotoHandle().setTarget(nopInstruction));
+        IfInstruction.getLastIf(args.getContext(), this).forEach(IfInstruction -> IfInstruction.getGotoBranch().setTarget(nopInstruction));
     }
 
 }

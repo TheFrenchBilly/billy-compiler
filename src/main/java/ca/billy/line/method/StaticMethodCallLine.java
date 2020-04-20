@@ -1,10 +1,11 @@
 package ca.billy.line.method;
 
-import ca.billy.expression.ExpressionProcessor;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.method.call.StaticMethodCallInstruction;
 import ca.billy.line.BillyLine;
+import ca.billy.line.LineWrapper;
+import ca.billy.util.MethodUtil;
 
 public class StaticMethodCallLine extends AbstractMethodWithoutParameterLine implements BillyLine {
 
@@ -14,8 +15,8 @@ public class StaticMethodCallLine extends AbstractMethodWithoutParameterLine imp
     }
 
     @Override
-    public BillyInstruction createBillyInstruction(String line, BillyInstructionContext instructionContext, ExpressionProcessor expressionProcessor) {
-        return new StaticMethodCallInstruction(extractMethodName(line));
+    public BillyInstruction createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
+        return new StaticMethodCallInstruction(MethodUtil.extractMethodName(line.getLine()));
     }
 
 }

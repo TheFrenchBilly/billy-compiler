@@ -14,7 +14,7 @@ public class InstructionContainerTest {
     @Test
     public void testNoMain() {
         try {
-            new InstructionContainer().valid(null);
+            new InstructionContainer().build();
         } catch (BillyException e) {
             Assert.assertEquals("no main()", e.getMessage());
             return;
@@ -37,11 +37,11 @@ public class InstructionContainerTest {
     @Test
     public void testFindVariable() {
         InstructionContainer instuctionContainer = new InstructionContainer();
-        instuctionContainer.add(new MainAttributeDefinitionInstruction("aAtribute", EnumType.STRING));
+        instuctionContainer.add(new MainAttributeDefinitionInstruction("aAtribute", EnumType.STRING, 0));
         Assert.assertNull(instuctionContainer.findVariable("myAttribute"));
         Assert.assertFalse(instuctionContainer.isExistingVariable("myAttribute"));
         
-        instuctionContainer.add(new MainAttributeDefinitionInstruction("myAttribute", EnumType.BOOLEAN));
+        instuctionContainer.add(new MainAttributeDefinitionInstruction("myAttribute", EnumType.BOOLEAN, 0));
         Assert.assertNotNull(instuctionContainer.findVariable("myAttribute"));
         Assert.assertTrue(instuctionContainer.isExistingVariable("myAttribute"));
     }

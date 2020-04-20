@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import ca.billy.BillyException;
 import ca.billy.FileCompiler;
+import ca.billy.Log;
+import ca.billy.util.LineUtil;
 
 public class ErreurIntegrationTest {
     
@@ -13,6 +15,8 @@ public class ErreurIntegrationTest {
     
     @Before
     public void setup() {
+        Log.enable();
+        LineUtil.resetLineNumber();
         fileCompiler = new FileCompiler();
     }
     
@@ -21,7 +25,7 @@ public class ErreurIntegrationTest {
         try {
             fileCompiler.compileFile("src/test/resources/erreur/DoubleMain.billy");
         } catch (BillyException e) {
-            Assert.assertEquals("two main() method", e.getMessage());
+            Assert.assertEquals("two main() method - lineNumber=4", e.getMessage());
             return;
         }
         Assert.fail();
@@ -32,7 +36,7 @@ public class ErreurIntegrationTest {
         try {
             fileCompiler.compileFile("src/test/resources/erreur/DoubleMainStaticMethodName.billy");
         } catch (BillyException e) {
-            Assert.assertEquals("static method already define : world", e.getMessage());
+            Assert.assertEquals("static method already define : world - lineNumber=8", e.getMessage());
             return;
         }
         Assert.fail();

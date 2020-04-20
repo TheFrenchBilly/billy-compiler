@@ -4,29 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.bcel.Const;
-import org.apache.bcel.generic.BranchInstruction;
 import org.apache.bcel.generic.GOTO;
 import org.apache.bcel.generic.InstructionFactory;
 import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.NOP;
 
-import ca.billy.bcel.utils.BranchUtils;
-import ca.billy.expression.instruction.IExpression;
+import ca.billy.bcel.utils.Branch;
+import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
-import ca.billy.instruction.context.VariableInstructionContext;
-import ca.billy.line.LineContainer.LineContext;
+import ca.billy.instruction.context.CodeInstructionContext;
+import ca.billy.line.BillyLineContainer.LineContext;
 import lombok.Getter;
 
-public class IfInstruction extends VariableInstructionContext implements BillyCodeInstruction {
+public class IfInstruction extends CodeInstructionContext implements BillyCodeInstruction {
 
-    protected IExpression expression;
+    protected Expression expression;
 
     @Getter
-    protected GOTO gotoHandle;
+    protected Branch gotoBranch;
 
-    public IfInstruction(BillyInstructionContext parent, IExpression expression) {
+    public IfInstruction(BillyInstructionContext parent, Expression expression) {
         super(parent);
         this.expression = expression;
     }
@@ -38,25 +37,25 @@ public class IfInstruction extends VariableInstructionContext implements BillyCo
 
     @Override
     public void build(BillyCodeInstructionArgs args) {
-        BranchInstruction falseHandle = InstructionFactory.createBranchInstruction(Const.IFEQ, null);
-        gotoHandle = new GOTO(null);
+        BillyCodeInstructionArgs ifArgs = args.toBuilder().context(this).build();
+        Branch falseBranch = new Branch(InstructionFactory.createBranchInstruction(Const.IFEQ, null), ifArgs);
+        gotoBranch = new Branch(new GOTO(null), ifArgs);
 
         expression.build(args);
-        BranchUtils.createBranch(falseHandle, args);
+        falseBranch.buildBranch();
 
-        BillyCodeInstructionArgs ifArgs = args.toBuilder().context(this).build();
         for (BillyInstruction ins : getInstructions()) {
             ((BillyCodeInstruction) ins).build(ifArgs);
         }
-        BranchUtils.createBranch(gotoHandle, args);
+        gotoBranch.buildBranch();
 
         InstructionHandle nopInstruction = args.getIl().append(new NOP());
-        falseHandle.setTarget(nopInstruction);
-        gotoHandle.setTarget(nopInstruction);
+        falseBranch.setTarget(nopInstruction);
+        gotoBranch.setTarget(nopInstruction);
     }
 
     static List<IfInstruction> getLastIf(BillyInstructionContext context, BillyInstruction instruction) {
-        List<BillyInstruction> ins = context.getIntructions();
+        List<BillyInstruction> ins = context.getInstructions();
         int pos;
         for (pos = 0; pos < ins.size(); ++pos)
             if (ins.get(pos) == instruction)

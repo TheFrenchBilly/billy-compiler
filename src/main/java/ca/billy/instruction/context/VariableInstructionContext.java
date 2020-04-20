@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.method.MethodDefinition;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
-import ca.billy.line.LineContainer.LineContext;
+import ca.billy.line.BillyLineContainer.LineContext;
+import ca.billy.type.EnumType;
 import lombok.Getter;
 
 public abstract class VariableInstructionContext implements BillyInstructionContext {
@@ -25,24 +26,28 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
     }
 
     @Override
-    public void valid(BillyInstructionContext instructionContext) {
-        instructions.forEach((i) -> i.valid(instructionContext));
-    }
-    
-    @Override
     public void add(BillyInstruction instruction) {
         instructions.add(instruction);
     }
-    
-    @Override
-    public List<BillyInstruction> getIntructions() {
-        return instructions;
-    }
 
-    // By default a BillyInstructionContext don't have method so it's lets his parent try
     @Override
-    public MethodDefinition findMethod(String methodName) {
-        return getParent().findMethod(methodName);
+    public List<EnumType> getFrameVariables() {
+        List<VariableDefinitionInstruction> variables = new ArrayList<>();
+
+        BillyInstructionContext context = this;
+        while (context instanceof VariableInstructionContext) {
+            context
+                    .getInstructions()
+                    .stream()
+                    .filter(VariableDefinitionInstruction.class::isInstance)
+                    .map(VariableDefinitionInstruction.class::cast)
+                    .filter(v -> v.getIndex() != null)
+                    .forEach(v -> variables.add(v));
+            context = context.getParent();
+        }
+
+        return variables.stream().sorted(Comparator.comparing(VariableDefinitionInstruction::getIndex)).map(VariableDefinitionInstruction::getEnumType).collect(
+                Collectors.toList());
     }
 
     @Override
@@ -56,24 +61,30 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
     }
 
     @Override
-    public List<VariableDefinitionInstruction> getVariables() {
-        List<VariableDefinitionInstruction> variables = getInstructions()
+    public VariableDefinitionInstruction findLocalVariable(String variableName) {
+        return (VariableDefinitionInstruction) getInstructions()
                 .stream()
                 .filter(VariableDefinitionInstruction.class::isInstance)
-                .map(VariableDefinitionInstruction.class::cast)
-                .filter(v -> v.getIndex() != null)
-                .sorted(Comparator.comparing(VariableDefinitionInstruction::getIndex))
-                .collect(Collectors.toList());
+                .filter(v -> ((VariableDefinitionInstruction) v).getName().equals(variableName))
+                .findFirst()
+                .orElse(null);
+    }
 
-        BillyInstructionContext parents = getParent();
-        while (parents instanceof VariableInstructionContext) {
-            variables.addAll(parents.getVariables());
-            parents = parents.getParent();
-        }
+    @Override
+    public MethodDefinition findDefaultMethod(String methodName) {
+        // By default a BillyInstructionContext don't have default method so it's lets his parent try
+        return getParent().findDefaultMethod(methodName);
+    }
 
-        variables.sort(Comparator.comparing(VariableDefinitionInstruction::getIndex));
+    @Override
+    public MethodDefinition findMethod(String methodName) {
+        // By default a BillyInstructionContext don't have method so it's lets his parent try
+        return getParent().findMethod(methodName);
+    }
 
-        return variables;
+    @Override
+    public MethodDefinition findLocalMethod(String methodName) {
+        return null;
     }
 
     @Override
@@ -82,8 +93,18 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
     }
 
     @Override
+    public boolean isExistingLocalVariable(String variableName) {
+        return findLocalVariable(variableName) != null;
+    }
+
+    @Override
     public boolean isExistingMethod(String methodName) {
         return findMethod(methodName) != null;
+    }
+
+    @Override
+    public boolean isExistingLocalMethod(String methodName) {
+        return findLocalMethod(methodName) != null;
     }
 
     @Override

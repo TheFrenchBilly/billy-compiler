@@ -9,12 +9,13 @@ import java.util.stream.Collectors;
 
 import org.apache.bcel.classfile.StackMap;
 import org.apache.bcel.classfile.StackMapEntry;
-import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.Type;
 
+import ca.billy.bcel.utils.Branch;
+
 /**
- * Only support SAME_FRAME,SAME_LOCALS_1_STACK_ITEM_FRAME,APPEND_FRAME for now and their extended version if needed
+ * https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.7.4
  * 
  * @author cedric.bilodeau
  */
@@ -22,46 +23,42 @@ public class StackMapBuilder {
 
     private ConstantPoolGen cp;
 
-    private List<StackMapBuilderEntry> entries;
-
-    private Type[] locals;
+    private List<Branch> branchs;
 
     public StackMapBuilder(ConstantPoolGen cp) {
         this.cp = cp;
-        entries = new ArrayList<>();
-        locals = new Type[0];
+        branchs = new ArrayList<>();
     }
-    
-    public StackMapBuilder addFrame(BranchHandle handle, Type[] locals, Type[] stacks) {
-        entries.add(new StackMapBuilderEntry(handle, locals, stacks));
+
+    public StackMapBuilder addFrame(Branch branch) {
+        branchs.add(branch);
         return this;
     }
-    
-    public StackMap build() {
+
+    /**
+     * Build the {@link StackMap}
+     * 
+     * @param locals The initial local
+     * @return The {@link StackMap}
+     */
+    public StackMap build(Type... locals) {
         int stackMapTableEntry = cp.addUtf8("StackMapTable");
+
         Set<Integer> targetSet = new HashSet<>();
-        entries = entries.stream().filter(e ->  targetSet.add(e.getTargetPosition())).sorted(Comparator.comparingInt(StackMapBuilderEntry::getTargetPosition)).collect(Collectors.toList());
-        StackMapEntry[] map = new StackMapEntry[entries.size()];
+        branchs = branchs.stream().filter(b -> targetSet.add(b.getTargetPosition())).sorted(Comparator.comparingInt(Branch::getTargetPosition)).collect(Collectors.toList());
+
+        StackMapEntry[] map = new StackMapEntry[branchs.size()];
         for (int i = 0; i < map.length; ++i) {
-            map[i] = entries.get(i).build(i == 0 ? null : entries.get(i - 1), cp, this);
+            // WARNING : This code don't verify if the locals are the same type .. maybe it should
+            int localDiff = branchs.get(i).getLocals().length - locals.length;
+            locals = branchs.get(i).getLocals();
+            int offset = i == 0 ? branchs.get(i).getTargetPosition() : branchs.get(i).getTargetPosition() - 1 - branchs.get(i - 1).getTargetPosition();
+            map[i] = StackMapEntryFactory.create(branchs.get(i).getLocals(), branchs.get(i).getStacks(), localDiff, offset, cp);
         }
 
         StackMap stackMap = new StackMap(stackMapTableEntry, 0, null, cp.getConstantPool());
         stackMap.setStackMap(map);
         return stackMap;
-    }
-    
-    int adjustLocals(Type[] locals) {
-        int length = locals.length - this.locals.length;
-        if (length == 0) {
-            return 0;
-        }
-        Type[] newLocals = new Type[length];
-        for (int i = this.locals.length; i < locals.length; ++i) {
-            newLocals[i - this.locals.length] = locals[i];
-        }
-        this.locals = locals;
-        return length;
     }
 
 }

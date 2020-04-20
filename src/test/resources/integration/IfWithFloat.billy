@@ -1,0 +1,14 @@
+Float i	= 11.0
+
+main()
+	loop()
+	
+loop()
+	if i > 1.0:
+		i = i - 1f
+		print(i + " ")
+		loop()
+	elseif true:
+		printLine("done")
+	else:
+		print("IMPOSSIBLE")

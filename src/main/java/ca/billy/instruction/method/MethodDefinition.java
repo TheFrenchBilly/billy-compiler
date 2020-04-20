@@ -21,7 +21,7 @@ public class MethodDefinition {
 
     // TODO Not working now
     @Getter
-    private Type[] args;
+    private EnumType[] args;
 
     private boolean isStatic;
 
@@ -32,12 +32,12 @@ public class MethodDefinition {
     public MethodDefinition(String name, EnumType returnType, EnumType... args) {
         this.name = name;
         this.returnEnumType = returnType;
-        this.args = convertType(args);
+        this.args = args;
         this.accessModifiers = AccessModifiers.PUBLIC;
     }
 
     public Type getReturnType() {
-        return returnEnumType == null ? Type.VOID : returnEnumType.getTypeInfo().getBcelType();
+        return returnEnumType == null ? Type.VOID : returnEnumType.getBcelType();
     }
 
     public MethodDefinition setStatic() {
@@ -53,17 +53,8 @@ public class MethodDefinition {
         return accessModifiers.getFlag();
     }
 
-    MethodDefinition withArgs(Type[] args) {
+    MethodDefinition withArgs(EnumType[] args) {
         this.args = args;
         return this;
     }
-
-    private Type[] convertType(EnumType[] args) {
-        Type[] types = new Type[args.length];
-        for (int i = 0; i < args.length; ++i) {
-            types[i] = args[i].getTypeInfo().getBcelType();
-        }
-        return types;
-    }
-
 }
