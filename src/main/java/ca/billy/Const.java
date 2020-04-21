@@ -10,6 +10,7 @@ public class Const {
     public final static String PRINT_LINE = "printLine";
     public final static String READ_LINE = "readLine";
     public final static String ARRAY_LENGTH_LINE = "arrayLength";
+    public final static String BREAK = "break";
     public final static String START_PARENTHESES = "(";
     public final static String END_PARENTHESES = ")";
     public final static String START_CURLY_BRACKETS = "{";

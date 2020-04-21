@@ -1,8 +1,9 @@
-package ca.billy.line.control;
+package ca.billy.line.control.loop;
 
 import ca.billy.Const;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.line.LineWrapper;
+import ca.billy.line.control.ControlExpressionLine;
 
 public abstract class AbstractForLine extends ControlExpressionLine {
 

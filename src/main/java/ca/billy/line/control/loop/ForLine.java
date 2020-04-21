@@ -1,4 +1,4 @@
-package ca.billy.line.control;
+package ca.billy.line.control.loop;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
@@ -7,7 +7,7 @@ import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.InstructionContainer;
 import ca.billy.instruction.context.VariableInstructionContext;
-import ca.billy.instruction.control.ForInstruction;
+import ca.billy.instruction.control.loop.ForInstruction;
 import ca.billy.line.BillyLineContainer;
 import ca.billy.line.BillyLineContainer.LineContext;
 import ca.billy.line.LineWrapper;

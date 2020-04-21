@@ -15,6 +15,7 @@ import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.CodeInstructionContext;
+import ca.billy.instruction.control.loop.BreakInstruction;
 import ca.billy.line.BillyLineContainer.LineContext;
 import lombok.Getter;
 
@@ -38,20 +39,34 @@ public class IfInstruction extends CodeInstructionContext implements BillyCodeIn
     @Override
     public void build(BillyCodeInstructionArgs args) {
         BillyCodeInstructionArgs ifArgs = args.toBuilder().context(this).build();
-        Branch falseBranch = new Branch(InstructionFactory.createBranchInstruction(Const.IFEQ, null), ifArgs);
-        gotoBranch = new Branch(new GOTO(null), ifArgs);
+        Branch falseBranch = new Branch(InstructionFactory.createBranchInstruction(Const.IFEQ, null), args);
+        boolean isBreak = false;
 
         expression.build(args);
         falseBranch.buildBranch();
 
         for (BillyInstruction ins : getInstructions()) {
             ((BillyCodeInstruction) ins).build(ifArgs);
+            if (ins instanceof BreakInstruction) {
+                isBreak = true;
+                break;
+            }
         }
-        gotoBranch.buildBranch();
+        if (!isBreak) {
+            gotoBranch = new Branch(new GOTO(null), args);
+            gotoBranch.buildBranch();
+        }
 
         InstructionHandle nopInstruction = args.getIl().append(new NOP());
         falseBranch.setTarget(nopInstruction);
-        gotoBranch.setTarget(nopInstruction);
+        setTargetForGoto(nopInstruction);
+    }
+
+    // TO USE
+    public void setTargetForGoto(InstructionHandle target) {
+        if (gotoBranch != null) {
+            gotoBranch.setTarget(target);
+        }
     }
 
     static List<IfInstruction> getLastIf(BillyInstructionContext context, BillyInstruction instruction) {
@@ -69,11 +84,11 @@ public class IfInstruction extends CodeInstructionContext implements BillyCodeIn
             if (!(ins.get(i) instanceof IfInstruction))
                 return ifInstruction;
             else
-                ifInstruction.add((IfInstruction)ins.get(i));
+                ifInstruction.add((IfInstruction) ins.get(i));
 
         if (ifInstruction.isEmpty())
             throw new IllegalArgumentException("IfInstruction not found");
-        
+
         return ifInstruction;
     }
 

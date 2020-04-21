@@ -1,4 +1,4 @@
-package ca.billy.instruction.control;
+package ca.billy.instruction.control.loop;
 
 import org.apache.bcel.Const;
 import org.apache.bcel.generic.GOTO;
@@ -14,13 +14,12 @@ import ca.billy.expression.instruction.VariableExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
-import ca.billy.instruction.context.CodeInstructionContext;
 import ca.billy.instruction.context.TmpContext;
 import ca.billy.instruction.method.call.ArrayLengthMethodCallInstruction;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.type.EnumType;
 
-public class ForEachInstruction extends CodeInstructionContext implements BillyCodeInstruction {
+public class ForEachInstruction extends AbstractForInstruction {
 
     private String variableName;
 
@@ -82,6 +81,8 @@ public class ForEachInstruction extends CodeInstructionContext implements BillyC
         hiddenVariable.buildLoad(forArgs);
         new ArrayLengthMethodCallInstruction(hiddenArrayVariable == null ? arrayExpression : new Expression("hiddenArray", array.getResultType()), true).build(forArgs);
         endBranch.buildBranch();
+        
+        setBreakTarget(args);
     }
 
 }

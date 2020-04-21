@@ -7,12 +7,15 @@ import org.apache.bcel.generic.Type;
 
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 import lombok.Getter;
+import lombok.Setter;
 
 public class Branch {
 
     private BranchInstruction branch;
-    private BillyCodeInstructionArgs args;
     private BranchHandle branchHandle;
+    
+    @Setter
+    private BillyCodeInstructionArgs args;
 
     @Getter
     private Type[] stacks;
@@ -35,7 +38,7 @@ public class Branch {
     public void buildBranch() {
         branchHandle = args.getIl().append(branch);
     }
-    
+
     public int getTargetPosition() {
         return branchHandle.getTarget().getPosition();
     }

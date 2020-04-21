@@ -1,11 +1,11 @@
-package ca.billy.line.control;
+package ca.billy.line.control.loop;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
 import ca.billy.expression.Expression;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.VariableInstructionContext;
-import ca.billy.instruction.control.ForEachInstruction;
+import ca.billy.instruction.control.loop.ForEachInstruction;
 import ca.billy.line.LineWrapper;
 import ca.billy.type.EnumType;
 import ca.billy.util.VariableUtil;

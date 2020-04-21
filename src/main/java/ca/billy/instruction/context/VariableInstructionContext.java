@@ -55,7 +55,9 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
         return (VariableDefinitionInstruction) getInstructions()
                 .stream()
                 .filter(VariableDefinitionInstruction.class::isInstance)
-                .filter(v -> ((VariableDefinitionInstruction) v).getName().equals(variableName))
+                .map(VariableDefinitionInstruction.class::cast)
+                .filter(v -> v.getName().equals(variableName))
+                .filter(v -> v.getIndex() != null)
                 .findFirst()
                 .orElse(getParent().findVariable(variableName));
     }

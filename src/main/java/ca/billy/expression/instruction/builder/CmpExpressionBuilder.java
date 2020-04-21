@@ -58,7 +58,7 @@ public class CmpExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private short getOperation(BillyCodeInstructionArgs args) {
-        if (type.equals(Type.INT)) {
+        if (type.equals(Type.INT) || type.equals(Type.BOOLEAN)) {
             switch (op) {
                 case "==":
                     return Const.IF_ICMPNE;

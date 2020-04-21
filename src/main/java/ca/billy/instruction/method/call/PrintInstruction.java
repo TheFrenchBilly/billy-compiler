@@ -8,7 +8,7 @@ import ca.billy.expression.Expression;
 import ca.billy.expression.instruction.ConstExpressionInstruction;
 import ca.billy.expression.instruction.IExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction;
-import ca.billy.instruction.control.ForEachInstruction;
+import ca.billy.instruction.control.loop.ForEachInstruction;
 import ca.billy.type.EnumType;
 
 public class PrintInstruction implements BillyCodeInstruction {

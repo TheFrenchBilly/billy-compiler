@@ -1,4 +1,4 @@
-package ca.billy.instruction.control;
+package ca.billy.instruction.control.loop;
 
 import org.apache.bcel.Const;
 import org.apache.bcel.generic.GOTO;
@@ -10,10 +10,9 @@ import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
-import ca.billy.instruction.context.CodeInstructionContext;
 import ca.billy.instruction.context.TmpContext;
 
-public class ForInstruction extends CodeInstructionContext implements BillyCodeInstruction {
+public class ForInstruction extends AbstractForInstruction {
 
     private BillyCodeInstruction initInstruction;
 
@@ -26,7 +25,6 @@ public class ForInstruction extends CodeInstructionContext implements BillyCodeI
         this.initInstruction = initInstruction;
         this.expression = expression;
         this.incrementInstruction = incrementInstruction;
-
     }
 
     @Override
@@ -60,6 +58,8 @@ public class ForInstruction extends CodeInstructionContext implements BillyCodeI
         
         expression.build(forArgs);
         endBranch.buildBranch();
+        
+        setBreakTarget(args);
     }
 
 }

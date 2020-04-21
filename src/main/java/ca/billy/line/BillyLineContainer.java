@@ -10,9 +10,10 @@ import ca.billy.line.attribute.StaticAttributeDefinitionAssignementLine;
 import ca.billy.line.attribute.StaticAttributeDefinitionLine;
 import ca.billy.line.control.ElseIfLine;
 import ca.billy.line.control.ElseLine;
-import ca.billy.line.control.ForEachLine;
-import ca.billy.line.control.ForLine;
 import ca.billy.line.control.IfLine;
+import ca.billy.line.control.loop.BreakLine;
+import ca.billy.line.control.loop.ForEachLine;
+import ca.billy.line.control.loop.ForLine;
 import ca.billy.line.method.MainStaticMethodLine;
 import ca.billy.line.method.StaticMethodCallLine;
 import ca.billy.line.method.build.in.MainMethodLine;
@@ -37,6 +38,7 @@ public class BillyLineContainer {
         ASSIGNEMENT, 
         DEFINITION_OR_ASSIGNEMENT, 
         CODE, 
+        LOOP_CODE,
         END_IF;
         // @formatter:on
     }
@@ -53,6 +55,9 @@ public class BillyLineContainer {
         add(LineContext.CODE, new PrintLineMethodLine(), new PrintMethodLine(), new ReadLineMethodLine(), new IfLine(), new ForLine(), new ForEachLine());
         add(LineContext.CODE, LineContext.DEFINITION_OR_ASSIGNEMENT);
         add(LineContext.CODE, new StaticMethodCallLine());
+        
+        add(LineContext.LOOP_CODE, new BreakLine());
+        add(LineContext.LOOP_CODE, LineContext.CODE);
 
         add(LineContext.END_IF, new ElseLine(), new ElseIfLine());
     }

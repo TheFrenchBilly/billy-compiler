@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ca.billy.instruction.method.MethodInstruction;
+import ca.billy.line.BillyLineContainer.LineContext;
 import ca.billy.type.EnumType;
 
 public class CodeInstructionContext extends VariableInstructionContext {
@@ -22,5 +23,10 @@ public class CodeInstructionContext extends VariableInstructionContext {
 
         return Stream.concat(Stream.of(((MethodInstruction) billyInstructionContext).getMethodDefinition().getArgs()), super.getFrameVariables().stream()).collect(
                 Collectors.toList());
+    }
+    
+    @Override
+    public LineContext getLineContext() {
+        return getParent().getLineContext();
     }
 }
