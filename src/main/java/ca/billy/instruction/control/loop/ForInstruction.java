@@ -1,18 +1,17 @@
 package ca.billy.instruction.control.loop;
 
-import org.apache.bcel.Const;
-import org.apache.bcel.generic.GOTO;
-import org.apache.bcel.generic.InstructionFactory;
-import org.apache.bcel.generic.NOP;
+import java.util.ArrayList;
+import java.util.List;
 
-import ca.billy.bcel.utils.Branch;
+import org.apache.bcel.Const;
+
 import ca.billy.expression.Expression;
 import ca.billy.instruction.BillyCodeInstruction;
-import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.TmpContext;
+import ca.billy.instruction.variable.VariableDefinitionInstruction;
 
-public class ForInstruction extends AbstractForInstruction {
+public class ForInstruction extends AbstractLoopInstruction {
 
     private BillyCodeInstruction initInstruction;
 
@@ -28,38 +27,36 @@ public class ForInstruction extends AbstractForInstruction {
     }
 
     @Override
-    public void build(BillyCodeInstructionArgs args) {
-        BillyCodeInstructionArgs forArgs = args.toBuilder().context(this).build();
-        TmpContext tmpContext = new TmpContext(args.getContext());
-        BillyCodeInstructionArgs tmpArgs = args.toBuilder().context(tmpContext).build();
-        Branch endBranch = new Branch(InstructionFactory.createBranchInstruction(Const.IFNE, null), forArgs);
-        Branch gotoBranch = new Branch(new GOTO(null), tmpArgs);
-        
+    protected short getJumpOpCode() {
+        return Const.IFNE;
+    }
+
+    @Override
+    protected List<VariableDefinitionInstruction> init(BillyCodeInstructionArgs loopArgs, TmpContext tmpContext) {
+        List<VariableDefinitionInstruction> variables = new ArrayList<>();
+
         if (initInstruction != null) {
             add(initInstruction);
             tmpContext.add(initInstruction);
-            initInstruction.build(forArgs);
-        }
-
-        gotoBranch.buildBranch();
-        endBranch.setTarget(args.getIl().append(new NOP()));
-        
-        for (BillyInstruction ins : getInstructions()) {
-            if (initInstruction == null || initInstruction != ins) {
-                ((BillyCodeInstruction) ins).build(forArgs);
+            initInstruction.build(loopArgs);
+            if (initInstruction instanceof VariableDefinitionInstruction) {
+                variables.add((VariableDefinitionInstruction) initInstruction);
             }
         }
 
+        return variables;
+    }
+
+    @Override
+    protected void increment(BillyCodeInstructionArgs loopArgs) {
         if (incrementInstruction != null) {
-            incrementInstruction.build(forArgs);
+            incrementInstruction.build(loopArgs);
         }
-        
-        gotoBranch.setTarget(args.getIl().append(new NOP()));
-        
-        expression.build(forArgs);
-        endBranch.buildBranch();
-        
-        setBreakTarget(args);
+    }
+
+    @Override
+    protected void expression(List<VariableDefinitionInstruction> initVariables, BillyCodeInstructionArgs loopArgs) {
+        expression.build(loopArgs);
     }
 
 }

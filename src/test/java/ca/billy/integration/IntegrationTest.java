@@ -24,7 +24,7 @@ public class IntegrationTest {
 
     @AfterClass
     public static void after() {
-//        TestHelper.removeGeneratedFile();
+        // TestHelper.removeGeneratedFile();
     }
 
     @Test
@@ -100,14 +100,14 @@ public class IntegrationTest {
         String res = TestHelper.run();
         assertEquals("0123456789done\n" + "10987654321done\n" + "adone\n" + "2.04.06.0done\n" + "1-12345 2-12345 3-12345 4-12345 5-12345 \n", res);
     }
-    
+
     @Test
     public void testBreak() throws Exception {
         fileCompiler.compileFile("src/test/resources/integration/Break.billy");
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("123falsedone\n" + "123123nobreak123done\n", res);
+        assertEquals("123falsedone\n" + "123123nobreak123done\n" + "1234again1234again1234again1234again1234done\n", res);
     }
 
     /** We just compile for this test ! */

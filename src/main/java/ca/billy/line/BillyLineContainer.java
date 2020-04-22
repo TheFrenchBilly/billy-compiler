@@ -14,6 +14,7 @@ import ca.billy.line.control.IfLine;
 import ca.billy.line.control.loop.BreakLine;
 import ca.billy.line.control.loop.ForEachLine;
 import ca.billy.line.control.loop.ForLine;
+import ca.billy.line.control.loop.WhileLine;
 import ca.billy.line.method.MainStaticMethodLine;
 import ca.billy.line.method.StaticMethodCallLine;
 import ca.billy.line.method.build.in.MainMethodLine;
@@ -52,10 +53,10 @@ public class BillyLineContainer {
         add(LineContext.ASSIGNEMENT, new VariableArrayAssignementLine(), new VariableAssignementLine());
         add(LineContext.DEFINITION_OR_ASSIGNEMENT, LineContext.DEFINITION, LineContext.ASSIGNEMENT);
 
-        add(LineContext.CODE, new PrintLineMethodLine(), new PrintMethodLine(), new ReadLineMethodLine(), new IfLine(), new ForLine(), new ForEachLine());
+        add(LineContext.CODE, new PrintLineMethodLine(), new PrintMethodLine(), new ReadLineMethodLine(), new IfLine(), new WhileLine(), new ForLine(), new ForEachLine());
         add(LineContext.CODE, LineContext.DEFINITION_OR_ASSIGNEMENT);
         add(LineContext.CODE, new StaticMethodCallLine());
-        
+
         add(LineContext.LOOP_CODE, new BreakLine());
         add(LineContext.LOOP_CODE, LineContext.CODE);
 

@@ -1,6 +1,7 @@
 main()
 	testBreakFor()
 	testBreakForEach()
+	testBreakWhile()
 	
 testBreakFor()
 	Boolean b
@@ -30,4 +31,21 @@ testBreakForEach()
 			String s
 			break
 			printLine(s)
+	printLine("done")
+	
+testBreakWhile()
+	Integer i
+	while true:
+		Integer y
+		while y != 5:
+			y = y + 1
+			print(y)
+			if y == 4:
+				break
+		i = i + y
+		y = 0
+		if i < 20:
+			print("again")
+		else :
+			break	
 	printLine("done")

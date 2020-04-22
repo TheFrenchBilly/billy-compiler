@@ -1,25 +1,22 @@
 package ca.billy.instruction.control.loop;
 
-import org.apache.bcel.Const;
-import org.apache.bcel.generic.GOTO;
-import org.apache.bcel.generic.IINC;
-import org.apache.bcel.generic.InstructionConst;
-import org.apache.bcel.generic.InstructionFactory;
-import org.apache.bcel.generic.NOP;
+import java.util.ArrayList;
+import java.util.List;
 
-import ca.billy.bcel.utils.Branch;
+import org.apache.bcel.Const;
+import org.apache.bcel.generic.IINC;
+
+import ca.billy.BillyException;
 import ca.billy.expression.Expression;
 import ca.billy.expression.instruction.IExpressionInstruction;
 import ca.billy.expression.instruction.VariableExpressionInstruction;
-import ca.billy.instruction.BillyCodeInstruction;
-import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.TmpContext;
 import ca.billy.instruction.method.call.ArrayLengthMethodCallInstruction;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.type.EnumType;
 
-public class ForEachInstruction extends AbstractForInstruction {
+public class ForEachInstruction extends AbstractLoopInstruction {
 
     private String variableName;
 
@@ -31,58 +28,58 @@ public class ForEachInstruction extends AbstractForInstruction {
         this.arrayExpression = arrayExpression;
     }
 
-    // TODO USE DIRECTLY ExpressionInstruction ????
     @Override
-    public void build(BillyCodeInstructionArgs args) {
-        BillyCodeInstructionArgs forArgs = args.toBuilder().context(this).build();
-        TmpContext tmpContext = new TmpContext(args.getContext());
-        BillyCodeInstructionArgs tmpArgs = args.toBuilder().context(tmpContext).build();
-
-        Branch endBranch = new Branch(InstructionFactory.createBranchInstruction(Const.IF_ICMPLT, null), forArgs);
-        Branch gotoBranch = new Branch(new GOTO(null), tmpArgs);
-
-        // Create the variable expression with the name based on the hidden int variable and the array
-        IExpressionInstruction array = arrayExpression.compile(forArgs);
-        Expression userVarExp = null;
-        VariableDefinitionInstruction hiddenArrayVariable = null;
-        if (array instanceof VariableExpressionInstruction) {
-            userVarExp = new Expression(((VariableExpressionInstruction) array).getVariableDefinitionInstruction().getName() + "[hidden]", array.getResultType().getArrayType());
-        } else {
-            hiddenArrayVariable = new VariableDefinitionInstruction("hiddenArray", array.getResultType(), arrayExpression);
-            hiddenArrayVariable.build(forArgs);
-            add(hiddenArrayVariable);
-            tmpContext.add(hiddenArrayVariable);
-            userVarExp = new Expression("hiddenArray[hidden]", array.getResultType().getArrayType());
-        }
-
-        // Create the hidden int variable
-        VariableDefinitionInstruction hiddenVariable = new VariableDefinitionInstruction("hidden", EnumType.INTEGER, -1);
-        hiddenVariable.build(forArgs);
-        add(hiddenVariable);
-        tmpContext.add(hiddenVariable);
-        gotoBranch.buildBranch();
-
-        endBranch.setTarget(args.getIl().append(InstructionConst.NOP));
-        VariableDefinitionInstruction userVariable = new VariableDefinitionInstruction(variableName, array.getResultType().getArrayType(), userVarExp);
-        userVariable.build(forArgs);
-        add(userVariable);
-
-        for (BillyInstruction ins : getInstructions()) {
-            if (hiddenVariable != ins && userVariable != ins && hiddenArrayVariable != ins) {
-                ((BillyCodeInstruction) ins).build(forArgs);
-            }
-        }
-
-        // increment the hidden int variable
-        args.getIl().append(new IINC(hiddenVariable.getIndex(), 1));
-        gotoBranch.setTarget(args.getIl().append(new NOP()));
-
-        // build the boolean expression
-        hiddenVariable.buildLoad(forArgs);
-        new ArrayLengthMethodCallInstruction(hiddenArrayVariable == null ? arrayExpression : new Expression("hiddenArray", array.getResultType()), true).build(forArgs);
-        endBranch.buildBranch();
-        
-        setBreakTarget(args);
+    protected short getJumpOpCode() {
+        return Const.IF_ICMPLT;
     }
 
+    @Override
+    protected List<VariableDefinitionInstruction> init(BillyCodeInstructionArgs loopArgs, TmpContext tmpContext) {
+        List<VariableDefinitionInstruction> variables = new ArrayList<>();
+        IExpressionInstruction array = arrayExpression.compile(loopArgs);
+
+        if (array instanceof VariableExpressionInstruction) {
+            variables.add(((VariableExpressionInstruction) array).getVariableDefinitionInstruction());
+        } else {
+            VariableDefinitionInstruction hiddenArrayVariable = new VariableDefinitionInstruction("hiddenArray", array.getResultType(), arrayExpression);
+            hiddenArrayVariable.build(loopArgs);
+            tmpContext.add(hiddenArrayVariable);
+            add(hiddenArrayVariable);
+            variables.add(hiddenArrayVariable);
+        }
+
+        VariableDefinitionInstruction hiddenVariable = new VariableDefinitionInstruction("hidden", EnumType.INTEGER, -1);
+        hiddenVariable.build(loopArgs);
+        tmpContext.add(hiddenVariable);
+        add(hiddenVariable);
+        variables.add(hiddenVariable);
+
+        return variables;
+    }
+
+    @Override
+    protected VariableDefinitionInstruction beforeUserInstruction(List<VariableDefinitionInstruction> initVariables, BillyCodeInstructionArgs loopArgs) {
+        VariableDefinitionInstruction arrayVariable = retrieveArray(initVariables);
+        Expression userVarExp = new Expression(arrayVariable.getName() + "[hidden]", arrayVariable.getEnumType().getArrayType());
+        VariableDefinitionInstruction loopVariable = new VariableDefinitionInstruction(variableName, arrayVariable.getEnumType().getArrayType(), userVarExp);
+        loopVariable.build(loopArgs);
+        add(loopVariable);
+        return loopVariable;
+    }
+
+    @Override
+    protected void increment(BillyCodeInstructionArgs loopArgs) {
+        loopArgs.getIl().append(new IINC(findVariable("hidden").getIndex(), 1));
+    }
+
+    @Override
+    protected void expression(List<VariableDefinitionInstruction> initVariables, BillyCodeInstructionArgs loopArgs) {
+        findVariable("hidden").buildLoad(loopArgs);
+        VariableDefinitionInstruction arrayVariable = retrieveArray(initVariables);
+        new ArrayLengthMethodCallInstruction(new Expression(arrayVariable.getName(), arrayVariable.getEnumType()), true).build(loopArgs);
+    }
+
+    private VariableDefinitionInstruction retrieveArray(List<VariableDefinitionInstruction> initVariables) {
+        return initVariables.stream().filter(v -> v.getEnumType().typeMatch(EnumType.ANY_ARRAY)).findFirst().orElseThrow(() -> new BillyException("Should not happen"));
+    }
 }

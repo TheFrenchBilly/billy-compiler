@@ -50,9 +50,6 @@ public class ExpressionInstructionFactory {
         Expression[] argsExp = new Expression[args.length];
         for (int i = 0; i < args.length; ++i) {
             argsExp[i] = new Expression(args[i], methodDefinition.getArgs()[i]);
-            // if (!argsExp[i].getResultType().getBcelType().equals(methodDefinition.getArgs()[i].getBcelType())) {
-            // throw new BillyException("Unexpected parameter type");
-            // }
         }
 
         return new MethodExpressionInstruction(methodDefinition, argsExp);
