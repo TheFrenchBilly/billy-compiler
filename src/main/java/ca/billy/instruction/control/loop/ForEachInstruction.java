@@ -18,12 +18,15 @@ import ca.billy.type.EnumType;
 
 public class ForEachInstruction extends AbstractLoopInstruction {
 
+    private String indexName;
+
     private String variableName;
 
     private Expression arrayExpression;
 
-    public ForEachInstruction(BillyInstructionContext parent, String variableName, Expression arrayExpression) {
+    public ForEachInstruction(BillyInstructionContext parent, String indexName, String variableName, Expression arrayExpression) {
         super(parent);
+        this.indexName = indexName;
         this.variableName = variableName;
         this.arrayExpression = arrayExpression;
     }
@@ -48,7 +51,7 @@ public class ForEachInstruction extends AbstractLoopInstruction {
             variables.add(hiddenArrayVariable);
         }
 
-        VariableDefinitionInstruction hiddenVariable = new VariableDefinitionInstruction("hidden", EnumType.INTEGER, -1);
+        VariableDefinitionInstruction hiddenVariable = new VariableDefinitionInstruction(getIndexName(), EnumType.INTEGER, -1);
         hiddenVariable.build(loopArgs);
         tmpContext.add(hiddenVariable);
         add(hiddenVariable);
@@ -60,7 +63,7 @@ public class ForEachInstruction extends AbstractLoopInstruction {
     @Override
     protected VariableDefinitionInstruction beforeUserInstruction(List<VariableDefinitionInstruction> initVariables, BillyCodeInstructionArgs loopArgs) {
         VariableDefinitionInstruction arrayVariable = retrieveArray(initVariables);
-        Expression userVarExp = new Expression(arrayVariable.getName() + "[hidden]", arrayVariable.getEnumType().getArrayType());
+        Expression userVarExp = new Expression(arrayVariable.getName() + "[" + getIndexName() + "]", arrayVariable.getEnumType().getArrayType());
         VariableDefinitionInstruction loopVariable = new VariableDefinitionInstruction(variableName, arrayVariable.getEnumType().getArrayType(), userVarExp);
         loopVariable.build(loopArgs);
         add(loopVariable);
@@ -69,17 +72,21 @@ public class ForEachInstruction extends AbstractLoopInstruction {
 
     @Override
     protected void increment(BillyCodeInstructionArgs loopArgs) {
-        loopArgs.getIl().append(new IINC(findVariable("hidden").getIndex(), 1));
+        loopArgs.getIl().append(new IINC(findVariable(getIndexName()).getIndex(), 1));
     }
 
     @Override
     protected void expression(List<VariableDefinitionInstruction> initVariables, BillyCodeInstructionArgs loopArgs) {
-        findVariable("hidden").buildLoad(loopArgs);
+        findVariable(getIndexName()).buildLoad(loopArgs);
         VariableDefinitionInstruction arrayVariable = retrieveArray(initVariables);
         new ArrayLengthMethodCallInstruction(new Expression(arrayVariable.getName(), arrayVariable.getEnumType()), true).build(loopArgs);
     }
 
     private VariableDefinitionInstruction retrieveArray(List<VariableDefinitionInstruction> initVariables) {
         return initVariables.stream().filter(v -> v.getEnumType().typeMatch(EnumType.ANY_ARRAY)).findFirst().orElseThrow(() -> new BillyException("Should not happen"));
+    }
+
+    private String getIndexName() {
+        return indexName == null ? "hidden" : indexName;
     }
 }

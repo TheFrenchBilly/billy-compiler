@@ -19,18 +19,36 @@ public class ForEachLine extends AbstractForLine {
 
     @Override
     public VariableInstructionContext createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
-        int index = line.getLine().indexOf(Const.SPACE);
-        String[] exps = line.getLine().substring(index + 1, line.getLine().length() - 1).split(";");
+        int spaceIndex = line.getLine().indexOf(Const.SPACE);
+        String[] exps = line.getLine().substring(spaceIndex + 1, line.getLine().length() - 1).split(";");
 
         for (int i = 0; i < 2; ++i) {
             exps[i] = exps[i].trim();
         }
 
-        if (!VariableUtil.isValidName(exps[0])) {
+        String indexName = null, loopName = null;
+        int commaIndex = exps[0].indexOf(Const.COMMA);
+
+        if (commaIndex == -1) {
+            loopName = exps[0];
+        } else {
+            String[] vars = exps[0].split(Const.COMMA);
+            for (int i = 0; i < 2; ++i) {
+                vars[i] = vars[i].trim();
+            }
+            indexName = vars[0];
+            loopName = vars[1];
+
+            if (!VariableUtil.isValidName(indexName)) {
+                throw new BillyException("Invalid index name " + exps[0]);
+            }
+        }
+
+        if (!VariableUtil.isValidName(loopName)) {
             throw new BillyException("Invalid variable name " + exps[0]);
         }
 
-        return new ForEachInstruction(instructionContext, exps[0], new Expression(exps[1], EnumType.ANY_ARRAY, line.getLineNumber()));
+        return new ForEachInstruction(instructionContext, indexName, loopName, new Expression(exps[1], EnumType.ANY_ARRAY, line.getLineNumber()));
     }
 
 }

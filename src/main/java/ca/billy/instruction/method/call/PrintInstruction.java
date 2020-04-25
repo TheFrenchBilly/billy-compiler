@@ -56,7 +56,7 @@ public class PrintInstruction implements BillyCodeInstruction {
     private void printArray(BillyCodeInstructionArgs args) {
         print(args, new ConstExpressionInstruction(ca.billy.Const.START_SQUARE_BRACKETS + ca.billy.Const.SPACE, EnumType.STRING), false);
         
-        ForEachInstruction forEachInstruction = new ForEachInstruction(args.getContext(), "toPrint", expression);
+        ForEachInstruction forEachInstruction = new ForEachInstruction(args.getContext(), null, "toPrint", expression);
         forEachInstruction.add(new PrintInstruction(new Expression("toPrint + \" \"" , EnumType.STRING)));
         forEachInstruction.build(args);
         

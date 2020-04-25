@@ -33,6 +33,6 @@ testForEachTwo()
 	for i ; ints:
 		String t = i + "-"
 		print(t)
-		for i ; ints:
-			print(i)
+		for index,i ; ints:
+			print(index)
 		print(" ")

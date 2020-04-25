@@ -98,7 +98,7 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("0123456789done\n" + "10987654321done\n" + "adone\n" + "2.04.06.0done\n" + "1-12345 2-12345 3-12345 4-12345 5-12345 \n", res);
+        assertEquals("0123456789done\n" + "10987654321done\n" + "adone\n" + "2.04.06.0done\n" + "1-01234 2-01234 3-01234 4-01234 5-01234 \n", res);
     }
 
     @Test

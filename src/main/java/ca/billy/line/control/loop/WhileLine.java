@@ -6,14 +6,14 @@ import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.VariableInstructionContext;
 import ca.billy.instruction.control.loop.WhileInstruction;
 import ca.billy.line.LineWrapper;
-import ca.billy.line.control.ControlExpressionLine;
 import ca.billy.type.EnumType;
 
-public class WhileLine extends ControlExpressionLine {
+// while use the keyword "for"
+public class WhileLine extends AbstractForLine {
 
     @Override
-    protected boolean isValidName(String name) {
-        return "while".equals(name);
+    protected int getLength() {
+        return 1;
     }
 
     @Override

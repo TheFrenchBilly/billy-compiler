@@ -35,9 +35,9 @@ testBreakForEach()
 	
 testBreakWhile()
 	Integer i
-	while true:
+	for true:
 		Integer y
-		while y != 5:
+		for y != 5:
 			y = y + 1
 			print(y)
 			if y == 4:
