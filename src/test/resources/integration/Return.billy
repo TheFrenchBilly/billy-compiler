@@ -1,0 +1,12 @@
+main()
+	testReturn()
+	
+testReturn()
+	if i < 10:
+		i = i + 1
+		print(i + " ")
+	else:
+		return
+	testReturn()
+
+Integer i

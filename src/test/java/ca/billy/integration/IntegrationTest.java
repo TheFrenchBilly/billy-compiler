@@ -102,6 +102,15 @@ public class IntegrationTest {
     }
 
     @Test
+    public void testReturn() throws Exception {
+        fileCompiler.compileFile("src/test/resources/integration/Return.billy");
+        fileCompiler.writeByteCode();
+
+        String res = TestHelper.run();
+        assertEquals("1 2 3 4 5 6 7 8 9 10 \n", res);
+    }
+    
+    @Test
     public void testBreak() throws Exception {
         fileCompiler.compileFile("src/test/resources/integration/Break.billy");
         fileCompiler.writeByteCode();

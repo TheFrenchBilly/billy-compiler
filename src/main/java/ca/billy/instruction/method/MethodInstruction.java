@@ -9,10 +9,10 @@ import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.classfile.StackMap;
 import org.apache.bcel.generic.ClassGen;
-import org.apache.bcel.generic.InstructionConst;
 import org.apache.bcel.generic.InstructionFactory;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.MethodGen;
+import org.apache.bcel.generic.Type;
 
 import ca.billy.bcel.utils.TypeUtil;
 import ca.billy.bcel.utils.stackmap.StackMapBuilder;
@@ -56,13 +56,15 @@ public class MethodInstruction extends VariableInstructionContext {
                 .context(this)
                 .stackMapBuilder(stackMapBuilder)
                 .build();
-
+        
+        // FIXME not always return void
+        if (methodDefinition.getReturnType() == Type.VOID) {
+            add(new ReturnInstruction());
+        }
+        
         for (BillyInstruction ins : getInstructions()) {
             ((BillyCodeInstruction) ins).build(args);
         }
-
-        // FIXME not always return void
-        il.append(InstructionConst.RETURN);
 
         mg.setMaxLocals();
         mg.setMaxStack();
