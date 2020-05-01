@@ -1,8 +1,8 @@
 package ca.billy.expression;
 
 import ca.billy.BillyException;
-import ca.billy.expression.instruction.ConstExpressionInstruction;
 import ca.billy.expression.instruction.IExpressionInstruction;
+import ca.billy.expression.instruction.leaf.ConstExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 import ca.billy.type.EnumType;
 import lombok.Getter;
@@ -40,7 +40,7 @@ public class Expression {
             return expressionInstruction;
 
         try {
-            return expressionInstruction = ExpressionProcessor.buildExpression(stringExpression, expectedReturn, args.getContext());
+            return expressionInstruction = ExpressionProcessor.parse(stringExpression, expectedReturn, args.getContext());
         } catch (BillyException e) {
             throw getException(e);
         }

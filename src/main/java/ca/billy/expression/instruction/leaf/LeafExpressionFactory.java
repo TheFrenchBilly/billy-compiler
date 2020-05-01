@@ -1,4 +1,4 @@
-package ca.billy.expression.instruction;
+package ca.billy.expression.instruction.leaf;
 
 import org.apache.bcel.generic.Type;
 
@@ -15,9 +15,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ExpressionInstructionFactory {
+public class LeafExpressionFactory {
 
-    public static SimpleExpressionInstruction createSimpleExpression(String value, BillyInstructionContext instructionContext) {
+    public static LeafExpressionInstruction createLeafExpression(String value, BillyInstructionContext instructionContext) {
         EnumType type = EnumType.findTypeWithValue(value);
         if (type != null) {
             return new ConstExpressionInstruction(type.getValue(value), type);
@@ -55,7 +55,7 @@ public class ExpressionInstructionFactory {
         return new MethodExpressionInstruction(methodDefinition, argsExp);
     }
 
-    private static SimpleExpressionInstruction createVariableExpression(String value, BillyInstructionContext instructionContext) {
+    private static LeafExpressionInstruction createVariableExpression(String value, BillyInstructionContext instructionContext) {
         VariableDefinitionInstruction variableDefinitionInstruction = instructionContext.findVariable(value);
 
         if (variableDefinitionInstruction == null) {
@@ -77,7 +77,7 @@ public class ExpressionInstructionFactory {
         }
 
         // TODO should expression be inside []?? (not just simpleExpression)
-        return new ArrayAccessExpressionInstruction(variableDefinitionInstruction, createSimpleExpression(arrayAccess[1], instructionContext));
+        return new ArrayAccessExpressionInstruction(variableDefinitionInstruction, createLeafExpression(arrayAccess[1], instructionContext));
     }
 
 }

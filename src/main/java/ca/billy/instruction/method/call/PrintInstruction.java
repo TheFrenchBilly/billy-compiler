@@ -5,8 +5,8 @@ import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.Type;
 
 import ca.billy.expression.Expression;
-import ca.billy.expression.instruction.ConstExpressionInstruction;
 import ca.billy.expression.instruction.IExpressionInstruction;
+import ca.billy.expression.instruction.leaf.ConstExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.control.loop.ForEachInstruction;
 import ca.billy.type.EnumType;

@@ -24,6 +24,7 @@ public class Const {
     public final static String TRUE = "true";
     public final static String FALSE = "false";
     public final static String SPACE = " ";
+    public final static String UNDERSCORE  = "_";
     public final static String EMPTY = "";
     public final static String OPT_ASSIGNEMENT = "=";
     public final static String COLONS = ":";

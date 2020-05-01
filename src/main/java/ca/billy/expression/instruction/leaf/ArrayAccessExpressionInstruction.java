@@ -1,4 +1,4 @@
-package ca.billy.expression.instruction;
+package ca.billy.expression.instruction.leaf;
 
 import org.apache.bcel.generic.InstructionFactory;
 
@@ -7,13 +7,13 @@ import ca.billy.type.EnumType;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ArrayAccessExpressionInstruction implements SimpleExpressionInstruction {
+public class ArrayAccessExpressionInstruction implements LeafExpressionInstruction {
       
     private VariableDefinitionInstruction variableDefinitionInstruction;
     
     // TODO should it be? private IExpression expression;
     // To have expression inside the []
-    private SimpleExpressionInstruction expression;
+    private LeafExpressionInstruction expression;
     
     @Override
     public EnumType getResultType() {

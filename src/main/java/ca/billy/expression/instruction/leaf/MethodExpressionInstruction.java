@@ -1,4 +1,4 @@
-package ca.billy.expression.instruction;
+package ca.billy.expression.instruction.leaf;
 
 import ca.billy.Const;
 import ca.billy.expression.Expression;
@@ -7,7 +7,7 @@ import ca.billy.instruction.method.call.ArrayLengthMethodCallInstruction;
 import ca.billy.instruction.method.call.ReadLineMethodCallInstruction;
 import ca.billy.type.EnumType;
 
-public class MethodExpressionInstruction implements SimpleExpressionInstruction {
+public class MethodExpressionInstruction implements LeafExpressionInstruction {
 
     private MethodDefinition methodDefinition;
 

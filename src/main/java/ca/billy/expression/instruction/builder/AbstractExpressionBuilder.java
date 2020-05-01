@@ -1,19 +1,13 @@
 package ca.billy.expression.instruction.builder;
 
-import ca.billy.expression.instruction.SimpleExpressionInstruction;
+import ca.billy.expression.instruction.IExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 
 public abstract class AbstractExpressionBuilder implements ExpressionBuilder {
 
     @Override
-    public void build(SimpleExpressionInstruction left, SimpleExpressionInstruction right, BillyCodeInstructionArgs args) {
+    public void build(IExpressionInstruction left, IExpressionInstruction right, BillyCodeInstructionArgs args) {
         left.build(args);
-        right.build(args);
-        build(args);
-    }
-
-    @Override
-    public void build(SimpleExpressionInstruction right, BillyCodeInstructionArgs args) {
         right.build(args);
         build(args);
     }

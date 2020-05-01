@@ -46,6 +46,23 @@ public enum OperatorEnum {
 
     // static method
 
+    /** Get the values by priority (ascending) */
+    public static OperatorEnum[][] getValuesByPriority() {
+        // @formatter:off
+        return new OperatorEnum[][] {
+            new OperatorEnum[] {OR},
+            new OperatorEnum[] {AND},
+            new OperatorEnum[] {OR_EXCLUSIVE},
+            new OperatorEnum[] {EQUALS, NOT_EQUALS},
+            new OperatorEnum[] {GREATER, SMALLER},
+            new OperatorEnum[] {ADDITION, SUBSTRACTION},
+            new OperatorEnum[] {DIVISION, MULTIPLICATION, MODULO},
+        };
+        // @formatter:on
+    }
+
+    // static private method
+
     private static SimpleExpressionType[] createNumerics(String op) {
         return new SimpleExpressionType[] { createBinaryExpressionType(EnumType.INTEGER, op), createBinaryExpressionType(EnumType.FLOAT, op) };
     }

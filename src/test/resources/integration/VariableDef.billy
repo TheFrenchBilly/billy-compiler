@@ -6,7 +6,7 @@ printFalse()
 	printLine(b)
 	
 printTrue()
-	c = i == 358 || false || c
+	c = i == 695 || false || c
 	print(c)
 
 main()
@@ -14,6 +14,8 @@ main()
 	print("Hello")
 	printFalse()
 	printTrue()
+	printLine(i)
+	i = 2 * 2 + 345 + 1
 	print(i)
 	
-Integer i = 12 + 345
+Integer i = 2  * (2 + 345)

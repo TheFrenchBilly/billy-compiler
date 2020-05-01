@@ -1,13 +1,15 @@
-package ca.billy.expression.instruction;
+package ca.billy.expression.instruction.leaf;
 
 import ca.billy.type.EnumType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @AllArgsConstructor
-public class ConstExpressionInstruction implements SimpleExpressionInstruction {
+public class ConstExpressionInstruction implements LeafExpressionInstruction {
 
+    @Getter
     private Object value;
 
     private EnumType type;

@@ -9,7 +9,7 @@ import org.apache.bcel.generic.IINC;
 import ca.billy.BillyException;
 import ca.billy.expression.Expression;
 import ca.billy.expression.instruction.IExpressionInstruction;
-import ca.billy.expression.instruction.VariableExpressionInstruction;
+import ca.billy.expression.instruction.leaf.VariableExpressionInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.TmpContext;
 import ca.billy.instruction.method.call.ArrayLengthMethodCallInstruction;

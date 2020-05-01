@@ -51,7 +51,7 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("Hellofalse\ntrue358\n", res);
+        assertEquals("Hellofalse\ntrue695\n350\n", res);
     }
 
     @Test
