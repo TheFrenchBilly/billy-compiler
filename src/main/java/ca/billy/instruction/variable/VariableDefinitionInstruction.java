@@ -5,6 +5,8 @@ import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.LocalVariableGen;
 
 import ca.billy.expression.Expression;
+import ca.billy.expression.ExpressionFactory;
+import ca.billy.expression.instruction.leaf.ConstExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.type.EnumType;
@@ -21,12 +23,12 @@ public class VariableDefinitionInstruction implements BillyCodeInstruction {
     protected Expression expression;
 
     private LocalVariableGen lg;
-    
+
     public VariableDefinitionInstruction(String name, EnumType enumType, int lineNumber) {
         super();
         this.name = name;
         this.enumType = enumType;
-        expression = new Expression(enumType, lineNumber);
+        expression = ExpressionFactory.createExpressionWithInstruction(new ConstExpressionInstruction(enumType.getDefaultValue(), enumType));
     }
 
     public VariableDefinitionInstruction(String name, EnumType enumType, Expression expression) {
@@ -38,12 +40,12 @@ public class VariableDefinitionInstruction implements BillyCodeInstruction {
 
     @Override
     public void build(BillyCodeInstructionArgs args) {
-        lg = args.getMg().addLocalVariable(name, enumType.getBcelType(), findIndex(args.getContext()), null, null);
         expression.build(args);
+        lg = args.getMg().addLocalVariable(name, enumType.getBcelType(), findIndex(args.getContext()), null, null);
         lg.setStart(args.getIl().append(InstructionFactory.createStore(enumType.getBcelType(), lg.getIndex())));
     }
 
-    private int findIndex(BillyInstructionContext billyInstructionContext) {            
+    private int findIndex(BillyInstructionContext billyInstructionContext) {
         return billyInstructionContext.getFrameVariables().size();
     }
 
@@ -61,8 +63,8 @@ public class VariableDefinitionInstruction implements BillyCodeInstruction {
         }
         return lg.getIndex();
     }
-    
-    // TODO add end to every variable ? does it really change something ? 
+
+    // TODO add end to every variable ? does it really change something ?
     // never use for now
     public void setEnd(InstructionHandle end) {
         lg.setEnd(end);

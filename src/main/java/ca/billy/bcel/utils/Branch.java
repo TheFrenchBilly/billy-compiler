@@ -6,6 +6,7 @@ import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.Type;
 
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
+import ca.billy.type.EnumType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ public class Branch {
 
     private BranchInstruction branch;
     private BranchHandle branchHandle;
-    
+
     @Setter
     private BillyCodeInstructionArgs args;
 
@@ -23,16 +24,16 @@ public class Branch {
     @Getter
     private Type[] locals;
 
-    public Branch(BranchInstruction branch, BillyCodeInstructionArgs args, Type... stacks) {
+    public Branch(BranchInstruction branch, BillyCodeInstructionArgs args, EnumType... stacks) {
         this.branch = branch;
         this.args = args;
-        this.stacks = stacks;
+        this.stacks = TypeUtil.merge(args.getContext().getStackTypes(), stacks);
         args.getStackMapBuilder().addFrame(this);
     }
 
     public void setTarget(InstructionHandle target) {
         branch.setTarget(target);
-        locals = args.getContext().getFrameVariables().stream().map(t -> t.getBcelType()).toArray(Type[]::new);
+        locals = TypeUtil.convertType(args.getContext().getFrameVariables());
     }
 
     public void buildBranch() {

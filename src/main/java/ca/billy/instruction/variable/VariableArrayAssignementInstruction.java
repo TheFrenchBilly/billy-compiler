@@ -3,7 +3,7 @@ package ca.billy.instruction.variable;
 import org.apache.bcel.generic.InstructionFactory;
 
 import ca.billy.BillyException;
-import ca.billy.expression.Expression;
+import ca.billy.expression.ExpressionFactory;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.type.EnumType;
 
@@ -34,8 +34,8 @@ public class VariableArrayAssignementInstruction implements BillyCodeInstruction
             throw new BillyException("variable is not a array : " + name, lineNumber);
         
         variableDefinitionInstruction.buildLoad(args);
-        new Expression(accessExpression, EnumType.INTEGER, lineNumber).build(args);       
-        new Expression(expressionString, variableDefinitionInstruction.getEnumType().getArrayType(), lineNumber).build(args);
+        ExpressionFactory.createExpression(accessExpression, EnumType.INTEGER, lineNumber).build(args);       
+        ExpressionFactory.createExpression(expressionString, variableDefinitionInstruction.getEnumType().getArrayType(), lineNumber).build(args);
         args.getIl().append(InstructionFactory.createArrayStore(variableDefinitionInstruction.getEnumType().getArrayBcelType()));
     }
 }

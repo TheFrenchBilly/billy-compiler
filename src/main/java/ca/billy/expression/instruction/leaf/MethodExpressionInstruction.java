@@ -13,7 +13,7 @@ public class MethodExpressionInstruction implements LeafExpressionInstruction {
 
     private Expression[] argsExp;
 
-    public MethodExpressionInstruction(MethodDefinition methodDefinition, Expression[] argsExp) {
+    public MethodExpressionInstruction(MethodDefinition methodDefinition, Expression... argsExp) {
         this.methodDefinition = methodDefinition;
         this.argsExp = argsExp;
     }
@@ -26,7 +26,7 @@ public class MethodExpressionInstruction implements LeafExpressionInstruction {
     @Override
     public void build(BillyCodeInstructionArgs args) {
         
-        // TODO make more that readLine usable
+        // TODO make more that readLine and arrayLength usable
         if (methodDefinition.getName().equals(Const.READ_LINE)) {
             new ReadLineMethodCallInstruction(true).build(args);
         } else if (methodDefinition.getName().equals(Const.ARRAY_LENGTH_LINE)) {

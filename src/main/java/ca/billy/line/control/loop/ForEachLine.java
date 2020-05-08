@@ -2,7 +2,7 @@ package ca.billy.line.control.loop;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
-import ca.billy.expression.Expression;
+import ca.billy.expression.ExpressionFactory;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.VariableInstructionContext;
 import ca.billy.instruction.control.loop.ForEachInstruction;
@@ -20,7 +20,7 @@ public class ForEachLine extends AbstractForLine {
     @Override
     public VariableInstructionContext createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
         int spaceIndex = line.getLine().indexOf(Const.SPACE);
-        String[] exps = line.getLine().substring(spaceIndex + 1, line.getLine().length() - 1).split(";");
+        String[] exps = line.getLine().substring(spaceIndex + 1, line.getLine().length() - 1).split(Const.SEMICOLONS);
 
         for (int i = 0; i < 2; ++i) {
             exps[i] = exps[i].trim();
@@ -48,7 +48,7 @@ public class ForEachLine extends AbstractForLine {
             throw new BillyException("Invalid variable name " + exps[0]);
         }
 
-        return new ForEachInstruction(instructionContext, indexName, loopName, new Expression(exps[1], EnumType.ANY_ARRAY, line.getLineNumber()));
+        return new ForEachInstruction(instructionContext, indexName, loopName, ExpressionFactory.createExpression(exps[1], EnumType.ANY_ARRAY, line.getLineNumber()));
     }
 
 }

@@ -64,6 +64,21 @@ public class IntegrationTest {
                 "The string array length is 2\n"
                         + "[ Hello world ]\n"
                         + "Hello\n"
+                        + "world\n"
+                        + "testPrintArray() Done\n"
+                        + "[ ]\n"
+                        + "[ 12 29 ]\n"
+                        + "29\n"
+                        + "0\n"
+                        + "13\n"
+                        + "testArraySubset() Done\n"
+                        + "true\n"
+                        + "false\n"
+                        + "true\n"
+                        + "true\n"
+                        + "true\n"
+                        + "false\n"
+                        + "testEquals() Done\n"
                         + "false\n"
                         + "13\n"
                         + "3\n"
@@ -109,7 +124,7 @@ public class IntegrationTest {
         String res = TestHelper.run();
         assertEquals("1 2 3 4 5 6 7 8 9 10 \n", res);
     }
-    
+
     @Test
     public void testBreak() throws Exception {
         fileCompiler.compileFile("src/test/resources/integration/Break.billy");

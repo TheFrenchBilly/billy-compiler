@@ -17,6 +17,7 @@ import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.CodeInstructionContext;
 import ca.billy.instruction.control.loop.BreakInstruction;
 import ca.billy.line.BillyLineContainer.LineContext;
+import ca.billy.type.EnumType;
 import lombok.Getter;
 
 public class IfInstruction extends CodeInstructionContext implements BillyCodeInstruction {
@@ -53,7 +54,7 @@ public class IfInstruction extends CodeInstructionContext implements BillyCodeIn
             }
         }
         if (!isBreak) {
-            gotoBranch = new Branch(new GOTO(null), args);
+            gotoBranch = new Branch(new GOTO(null), args, gotoBranchStackType());
             gotoBranch.buildBranch();
         }
 
@@ -61,8 +62,12 @@ public class IfInstruction extends CodeInstructionContext implements BillyCodeIn
         falseBranch.setTarget(nopInstruction);
         setTargetForGoto(nopInstruction);
     }
+    
+    // TODO other solution ?
+    protected EnumType[] gotoBranchStackType() {
+        return new EnumType[0];
+    }
 
-    // TO USE
     public void setTargetForGoto(InstructionHandle target) {
         if (gotoBranch != null) {
             gotoBranch.setTarget(target);

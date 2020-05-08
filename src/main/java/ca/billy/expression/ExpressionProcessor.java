@@ -35,11 +35,6 @@ public class ExpressionProcessor {
     }
 
     public static IExpressionInstruction parse(String expressionString, EnumType expectedReturn, BillyInstructionContext instructionContext) {
-        // TODO Move to user input ?
-//        if (expressionString.contains(Const.UNDERSCORE)) {
-//            throw new BillyException("Invalid character");
-//        }
-
         List<ReplaceWrapperExpression> replaceList = new ArrayList<>();
         String res = expressionString;
 
@@ -71,12 +66,13 @@ public class ExpressionProcessor {
         String res = expressionString;
 
         int methodIndexCounter = 0;
+        boolean inString = false;
         for (int i = 0; i < expressionString.length(); ++i) {
-            if (expressionString.charAt(i) == '(') {
+            if (expressionString.charAt(i) == '(' && !inString) {
                 StackInfo si = new StackInfo(i, methodIndexCounter, stack.size() > 0 && stack.peek().methodIndexCounter != 0);
                 stack.add(si);
 
-            } else if (expressionString.charAt(i) == ')') {
+            } else if (expressionString.charAt(i) == ')' && !inString) {
                 if (stack.size() == 0) {
                     throw new BillyException("Unexpected ')'");
                 }
@@ -91,6 +87,9 @@ public class ExpressionProcessor {
                     ++methodIndexCounter;
                 }
             } else {
+                if (expressionString.charAt(i) == '"') {
+                    inString = !inString;
+                }
                 methodIndexCounter = 0;
             }
         }
@@ -126,7 +125,7 @@ public class ExpressionProcessor {
 
         if (operatorIndex.index != -1) {
             IExpressionInstruction left = parse(s.substring(0, operatorIndex.index), replaceList, instructionContext);
-            IExpressionInstruction right = parse(s.substring(operatorIndex.index + operatorIndex.op.getOperator().length(), s.length()), replaceList, instructionContext);
+            IExpressionInstruction right = parse(s.substring(operatorIndex.index + operatorIndex.op.getOperator().length()), replaceList, instructionContext);
             ExpressionType expressionType = operatorIndex.op.retrieveExpressionType(left.getResultType(), right.getResultType());
             return new NodeExpression(left, expressionType, right);
         }

@@ -16,7 +16,7 @@ public abstract class AbstractForLine extends ControlExpressionLine {
     public boolean isValid(LineWrapper line, BillyInstructionContext instructionContext) {
         if (super.isValid(line, instructionContext)) {
             int index = line.getLine().indexOf(Const.SPACE);
-            String[] exps = line.getLine().substring(index + 1).split(";");
+            String[] exps = line.getLine().substring(index + 1).split(Const.SEMICOLONS);
             if (exps.length == getLength()) {
                 return true;
             }

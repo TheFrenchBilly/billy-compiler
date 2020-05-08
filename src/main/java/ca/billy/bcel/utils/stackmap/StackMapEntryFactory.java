@@ -14,27 +14,27 @@ public class StackMapEntryFactory {
 
         if (localDiff == 0) {
             if (typesOfStacks.length == 0) {
-                return buildSameFrame(offset, cp);
+                return createSameFrame(offset, cp);
             } else if (typesOfStacks.length == 1) {
-                return buildSameLocal1StackFrame(typesOfStacks, offset, cp);
+                return createSameLocal1StackFrame(typesOfStacks, offset, cp);
             }
         } else if (localDiff > 0 && localDiff <= 3 && typesOfStacks.length == 0) {
-            return buildAppendFrame(typesOfLocals, offset, localDiff, cp);
+            return createAppendFrame(typesOfLocals, offset, localDiff, cp);
         } else if (localDiff < 0 && localDiff >= -3 && typesOfStacks.length == 0) {
-            return buildChopeFrame(offset, localDiff, cp);
+            return createChopeFrame(offset, localDiff, cp);
         }
 
-        return buildFullFrame(typesOfLocals, typesOfStacks, offset, cp);
+        return createFullFrame(typesOfLocals, typesOfStacks, offset, cp);
     }
 
-    private static StackMapEntry buildSameFrame(int offset, ConstantPoolGen cp) {
+    private static StackMapEntry createSameFrame(int offset, ConstantPoolGen cp) {
         if (offset > 63) {
             return new StackMapEntry(Const.SAME_FRAME_EXTENDED, offset, new StackMapType[0], new StackMapType[0], cp.getConstantPool());
         }
         return new StackMapEntry(Const.SAME_FRAME + offset, 0, new StackMapType[0], new StackMapType[0], cp.getConstantPool());
     }
 
-    private static StackMapEntry buildAppendFrame(Type[] typesOfLocals, int offset, int localDiff, ConstantPoolGen cp) {
+    private static StackMapEntry createAppendFrame(Type[] typesOfLocals, int offset, int localDiff, ConstantPoolGen cp) {
         Type[] locals = new Type[localDiff];
         for (int i = localDiff - 1; i > -1; --i) {
             locals[i] = typesOfLocals[(typesOfLocals.length - localDiff) + i];
@@ -42,7 +42,7 @@ public class StackMapEntryFactory {
         return new StackMapEntry(Const.APPEND_FRAME + localDiff - 1, offset, getStackMapType(locals, cp), new StackMapType[0], cp.getConstantPool());
     }
 
-    private static StackMapEntry buildSameLocal1StackFrame(Type[] typesOfStacks, int offset, ConstantPoolGen cp) {
+    private static StackMapEntry createSameLocal1StackFrame(Type[] typesOfStacks, int offset, ConstantPoolGen cp) {
         StackMapType[] typesOfStackItems = getStackMapType(typesOfStacks, cp);
         if (offset > 63) {
             return new StackMapEntry(Const.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED, offset, new StackMapType[0], typesOfStackItems, cp.getConstantPool());
@@ -50,11 +50,11 @@ public class StackMapEntryFactory {
         return new StackMapEntry(Const.SAME_LOCALS_1_STACK_ITEM_FRAME + offset, 0, new StackMapType[0], typesOfStackItems, cp.getConstantPool());
     }
 
-    private static StackMapEntry buildChopeFrame(int offset, int localDiff, ConstantPoolGen cp) {
+    private static StackMapEntry createChopeFrame(int offset, int localDiff, ConstantPoolGen cp) {
         return new StackMapEntry(Const.CHOP_FRAME + 3 + localDiff, offset, new StackMapType[0], new StackMapType[0], cp.getConstantPool());
     }
 
-    private static StackMapEntry buildFullFrame(Type[] typesOfLocals, Type[] typesOfStacks, int offset, ConstantPoolGen cp) {
+    public static StackMapEntry createFullFrame(Type[] typesOfLocals, Type[] typesOfStacks, int offset, ConstantPoolGen cp) {
         StackMapType[] locals = getStackMapType(typesOfLocals, cp);
         StackMapType[] stacks = getStackMapType(typesOfStacks, cp);
 

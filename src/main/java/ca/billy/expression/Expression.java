@@ -2,38 +2,24 @@ package ca.billy.expression;
 
 import ca.billy.BillyException;
 import ca.billy.expression.instruction.IExpressionInstruction;
-import ca.billy.expression.instruction.leaf.ConstExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
 import ca.billy.type.EnumType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
+@AllArgsConstructor
 public class Expression {
 
     @Getter
     private String stringExpression;
 
+    @Setter
     private EnumType expectedReturn;
 
     private int lineNumber;
 
     private IExpressionInstruction expressionInstruction;
-
-    public Expression(String stringExpression, EnumType expectedReturn) {
-        this.stringExpression = stringExpression;
-        this.expectedReturn = expectedReturn;
-    }
-
-    public Expression(String stringExpression, EnumType expectedReturn, int lineNumber) {
-        this.stringExpression = stringExpression;
-        this.expectedReturn = expectedReturn;
-        this.lineNumber = lineNumber;
-    }
-
-    public Expression(EnumType type, int lineNumber) {
-        this.expectedReturn = type;
-        this.lineNumber = lineNumber;
-        expressionInstruction = new ConstExpressionInstruction(type.getDefaultValue(), type);
-    }
 
     public IExpressionInstruction compile(BillyCodeInstructionArgs args) {
         if (expressionInstruction != null)

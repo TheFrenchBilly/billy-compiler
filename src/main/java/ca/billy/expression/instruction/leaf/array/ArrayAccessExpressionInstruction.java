@@ -1,7 +1,8 @@
-package ca.billy.expression.instruction.leaf;
+package ca.billy.expression.instruction.leaf.array;
 
 import org.apache.bcel.generic.InstructionFactory;
 
+import ca.billy.expression.instruction.leaf.LeafExpressionInstruction;
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.type.EnumType;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ArrayAccessExpressionInstruction implements LeafExpressionInstruction {
       
-    private VariableDefinitionInstruction variableDefinitionInstruction;
+    private VariableDefinitionInstruction arrayVariableDefinitionInstruction;
     
     // TODO should it be? private IExpression expression;
     // To have expression inside the []
@@ -17,13 +18,13 @@ public class ArrayAccessExpressionInstruction implements LeafExpressionInstructi
     
     @Override
     public EnumType getResultType() {
-        return variableDefinitionInstruction.getEnumType().getArrayType();
+        return arrayVariableDefinitionInstruction.getEnumType().getArrayType();
     }
 
     @Override
     public void build(BillyCodeInstructionArgs args) {
-        variableDefinitionInstruction.buildLoad(args);
+        arrayVariableDefinitionInstruction.buildLoad(args);
         expression.build(args);
-        args.getIl().append(InstructionFactory.createArrayLoad(variableDefinitionInstruction.getEnumType().getArrayBcelType()));
+        args.getIl().append(InstructionFactory.createArrayLoad(arrayVariableDefinitionInstruction.getEnumType().getArrayBcelType()));
     }
 }

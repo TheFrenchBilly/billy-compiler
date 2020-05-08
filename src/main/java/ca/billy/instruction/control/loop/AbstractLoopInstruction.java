@@ -44,11 +44,7 @@ public abstract class AbstractLoopInstruction extends CodeInstructionContext imp
         endBranch.setTarget(args.getIl().append(InstructionConst.NOP));
         VariableDefinitionInstruction loopVariable = beforeUserInstruction(initVariables, loopArgs);
 
-        for (BillyInstruction ins : getInstructions()) {
-            if (initVariables.stream().noneMatch(v -> v == ins) && loopVariable != ins) {
-                ((BillyCodeInstruction) ins).build(loopArgs);
-            }
-        }
+        buildLoopIns(loopArgs, initVariables, loopVariable);
 
         increment(loopArgs);
 
@@ -57,6 +53,14 @@ public abstract class AbstractLoopInstruction extends CodeInstructionContext imp
         endBranch.buildBranch();
 
         setBreakTarget(tmpArgs);
+    }
+
+    protected void buildLoopIns(BillyCodeInstructionArgs loopArgs, List<VariableDefinitionInstruction> initVariables, VariableDefinitionInstruction loopVariable) {
+        for (BillyInstruction ins : getInstructions()) {
+            if (initVariables.stream().noneMatch(v -> v == ins) && loopVariable != ins) {
+                ((BillyCodeInstruction) ins).build(loopArgs);
+            }
+        }
     }
 
     protected void setBreakTarget(BillyCodeInstructionArgs args) {

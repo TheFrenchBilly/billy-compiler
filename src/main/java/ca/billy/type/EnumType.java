@@ -53,7 +53,7 @@ public enum EnumType {
 
     public boolean typeMatch(Object other) {
         if (other instanceof EnumType) {
-            if (this == ANY || other == ANY) {
+            if (this == ANY  || other == ANY) {
                 return true;
             }
 

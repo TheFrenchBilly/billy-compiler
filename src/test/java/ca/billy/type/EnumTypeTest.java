@@ -27,6 +27,7 @@ public class EnumTypeTest {
         Assert.assertFalse(EnumType.FLOAT.typeMatch(EnumType.ANY_ARRAY));
         Assert.assertTrue(EnumType.ANY_ARRAY.typeMatch(EnumType.INTEGER_ARRAY));
         Assert.assertTrue(EnumType.BOOLEAN_ARRAY.typeMatch(EnumType.ANY_ARRAY));
+        Assert.assertTrue(EnumType.ANY_ARRAY.typeMatch(EnumType.ANY_ARRAY));
     }
 
 }

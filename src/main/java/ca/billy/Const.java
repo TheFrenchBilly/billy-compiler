@@ -28,6 +28,7 @@ public class Const {
     public final static String EMPTY = "";
     public final static String OPT_ASSIGNEMENT = "=";
     public final static String COLONS = ":";
+    public final static String SEMICOLONS = ";";
     public final static String IF = "if";
     public final static String ELSE = "else";
 }

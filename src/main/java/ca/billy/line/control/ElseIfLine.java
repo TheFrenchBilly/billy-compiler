@@ -1,7 +1,7 @@
 package ca.billy.line.control;
 
 import ca.billy.Const;
-import ca.billy.expression.Expression;
+import ca.billy.expression.ExpressionFactory;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.VariableInstructionContext;
 import ca.billy.instruction.control.ElseIfInstruction;
@@ -20,6 +20,6 @@ public class ElseIfLine extends ControlExpressionLine {
         int index = line.getLine().indexOf(Const.SPACE);
         String exp = line.getLine().substring(index + 1, line.getLine().length() - 1);
 
-        return new ElseIfInstruction(instructionContext, new Expression(exp, EnumType.BOOLEAN, line.getLineNumber()));
+        return new ElseIfInstruction(instructionContext, ExpressionFactory.createExpression(exp, EnumType.BOOLEAN, line.getLineNumber()));
     }
 }

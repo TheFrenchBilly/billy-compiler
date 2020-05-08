@@ -9,13 +9,13 @@ public class VariableUtil {
 
     private static String VAR_REGEX = "[a-zA-Z]+";
 
-    private static String ARRAY_ACCESS_REGEX = VAR_REGEX + "\\[.+\\]";
+    private static String ARRAY_ACCESS_REGEX = VAR_REGEX + "\\s*" + "\\[.+\\]";
 
     public static boolean isValidName(String name) {
         return name.matches(VAR_REGEX);
     }
 
-    public static boolean isValidArrayAccess(String access) {
+    public static boolean isValidArrayExpression(String access) {
         return access.matches(ARRAY_ACCESS_REGEX);
     }
 

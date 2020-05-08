@@ -49,6 +49,11 @@ public abstract class VariableInstructionContext implements BillyInstructionCont
         return variables.stream().sorted(Comparator.comparing(VariableDefinitionInstruction::getIndex)).map(VariableDefinitionInstruction::getEnumType).collect(
                 Collectors.toList());
     }
+    
+    @Override
+    public List<EnumType> getStackTypes() {
+        return getParent().getStackTypes();
+    }
 
     @Override
     public VariableDefinitionInstruction findVariable(String variableName) {

@@ -183,7 +183,16 @@ public class ExpressionProcessorTest {
         Assert.assertTrue(res instanceof ReplaceWrapperExpression);
         Assert.assertTrue(((ReplaceWrapperExpression) res).getExpression() instanceof MethodExpressionInstruction);
     }
+    
+    @Test
+    public void parseParenthesesInString() {
 
+        IExpressionInstruction res = ExpressionProcessor.parse("\"(1)\"", EnumType.STRING, new InstructionContainer());
+
+        Assert.assertTrue(res instanceof ConstExpressionInstruction);
+        Assert.assertEquals("(1)", ((ConstExpressionInstruction) res).getValue());
+    }
+    
     @Test
     public void parseInvalidExpected() {
         try {

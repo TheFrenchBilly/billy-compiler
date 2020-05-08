@@ -8,8 +8,10 @@ import org.apache.bcel.generic.IINC;
 
 import ca.billy.BillyException;
 import ca.billy.expression.Expression;
+import ca.billy.expression.ExpressionFactory;
 import ca.billy.expression.instruction.IExpressionInstruction;
 import ca.billy.expression.instruction.leaf.VariableExpressionInstruction;
+import ca.billy.expression.instruction.leaf.array.ArrayAccessExpressionInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.TmpContext;
 import ca.billy.instruction.method.call.ArrayLengthMethodCallInstruction;
@@ -63,7 +65,8 @@ public class ForEachInstruction extends AbstractLoopInstruction {
     @Override
     protected VariableDefinitionInstruction beforeUserInstruction(List<VariableDefinitionInstruction> initVariables, BillyCodeInstructionArgs loopArgs) {
         VariableDefinitionInstruction arrayVariable = retrieveArray(initVariables);
-        Expression userVarExp = new Expression(arrayVariable.getName() + "[" + getIndexName() + "]", arrayVariable.getEnumType().getArrayType());
+        Expression userVarExp = ExpressionFactory
+                .createExpressionWithInstruction(new ArrayAccessExpressionInstruction(arrayVariable, new VariableExpressionInstruction(findIndexVariable())));
         VariableDefinitionInstruction loopVariable = new VariableDefinitionInstruction(variableName, arrayVariable.getEnumType().getArrayType(), userVarExp);
         loopVariable.build(loopArgs);
         add(loopVariable);
@@ -72,18 +75,22 @@ public class ForEachInstruction extends AbstractLoopInstruction {
 
     @Override
     protected void increment(BillyCodeInstructionArgs loopArgs) {
-        loopArgs.getIl().append(new IINC(findVariable(getIndexName()).getIndex(), 1));
+        loopArgs.getIl().append(new IINC(findIndexVariable().getIndex(), 1));
     }
 
     @Override
     protected void expression(List<VariableDefinitionInstruction> initVariables, BillyCodeInstructionArgs loopArgs) {
-        findVariable(getIndexName()).buildLoad(loopArgs);
+        findIndexVariable().buildLoad(loopArgs);
         VariableDefinitionInstruction arrayVariable = retrieveArray(initVariables);
-        new ArrayLengthMethodCallInstruction(new Expression(arrayVariable.getName(), arrayVariable.getEnumType()), true).build(loopArgs);
+        new ArrayLengthMethodCallInstruction(ExpressionFactory.createExpressionWithInstruction(new VariableExpressionInstruction(arrayVariable)), true).build(loopArgs);
     }
 
     private VariableDefinitionInstruction retrieveArray(List<VariableDefinitionInstruction> initVariables) {
         return initVariables.stream().filter(v -> v.getEnumType().typeMatch(EnumType.ANY_ARRAY)).findFirst().orElseThrow(() -> new BillyException("Should not happen"));
+    }
+
+    private VariableDefinitionInstruction findIndexVariable() {
+        return findVariable(getIndexName());
     }
 
     private String getIndexName() {
