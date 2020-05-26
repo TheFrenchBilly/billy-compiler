@@ -1,4 +1,4 @@
-package ca.billy.expression.instruction;
+package ca.billy.expression.instruction.leaf;
 
 import ca.billy.instruction.variable.VariableDefinitionInstruction;
 import ca.billy.type.EnumType;
@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Data
 @AllArgsConstructor
-public class VariableExpressionInstruction implements SimpleExpressionInstruction {
+public class VariableExpressionInstruction implements LeafExpressionInstruction {
     
     @Getter
     private VariableDefinitionInstruction variableDefinitionInstruction;

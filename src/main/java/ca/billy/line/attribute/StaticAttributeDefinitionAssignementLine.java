@@ -1,7 +1,7 @@
 package ca.billy.line.attribute;
 
 import ca.billy.BillyException;
-import ca.billy.expression.Expression;
+import ca.billy.expression.ExpressionFactory;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.attribute.MainAttributeDefinitionInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
@@ -20,7 +20,7 @@ public class StaticAttributeDefinitionAssignementLine extends VariableDefinition
         if (instructionContext.isExistingLocalVariable(s[0]))
             throw new BillyException("static variable already define : " + s[0]);
 
-        return new MainAttributeDefinitionInstruction(s[0], enumType, new Expression(s[1], enumType, line.getLineNumber()));
+        return new MainAttributeDefinitionInstruction(s[0], enumType, ExpressionFactory.createExpression(s[1], enumType, line.getLineNumber()));
     }
 
 }

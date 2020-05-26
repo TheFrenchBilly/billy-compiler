@@ -4,11 +4,13 @@ import org.apache.bcel.Const;
 import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.Type;
 
+import ca.billy.bcel.utils.StackUtil;
 import ca.billy.expression.Expression;
-import ca.billy.expression.instruction.ConstExpressionInstruction;
+import ca.billy.expression.ExpressionFactory;
 import ca.billy.expression.instruction.IExpressionInstruction;
+import ca.billy.expression.instruction.leaf.ConstExpressionInstruction;
 import ca.billy.instruction.BillyCodeInstruction;
-import ca.billy.instruction.control.ForEachInstruction;
+import ca.billy.instruction.control.loop.ForEachInstruction;
 import ca.billy.type.EnumType;
 
 public class PrintInstruction implements BillyCodeInstruction {
@@ -42,8 +44,9 @@ public class PrintInstruction implements BillyCodeInstruction {
     }
 
     private void print(BillyCodeInstructionArgs args, IExpressionInstruction expression, boolean endLine) {
-        args.getIl().append(args.getFactory().createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Const.GETSTATIC));
         expression.build(args);
+        args.getIl().append(args.getFactory().createFieldAccess("java.lang.System", "out", new ObjectType("java.io.PrintStream"), Const.GETSTATIC));
+        StackUtil.swap(args.getIl(), 1, 1);
         args.getIl().append(
                 args.getFactory().createInvoke(
                         "java.io.PrintStream",
@@ -56,8 +59,8 @@ public class PrintInstruction implements BillyCodeInstruction {
     private void printArray(BillyCodeInstructionArgs args) {
         print(args, new ConstExpressionInstruction(ca.billy.Const.START_SQUARE_BRACKETS + ca.billy.Const.SPACE, EnumType.STRING), false);
         
-        ForEachInstruction forEachInstruction = new ForEachInstruction(args.getContext(), "toPrint", expression);
-        forEachInstruction.add(new PrintInstruction(new Expression("toPrint + \" \"" , EnumType.STRING)));
+        ForEachInstruction forEachInstruction = new ForEachInstruction(args.getContext(), null, "toPrint", expression);
+        forEachInstruction.add(new PrintInstruction(ExpressionFactory.createExpression("toPrint + \" \"" , EnumType.STRING, 0)));
         forEachInstruction.build(args);
         
         print(args, new ConstExpressionInstruction(ca.billy.Const.END_SQUARE_BRACKETS, EnumType.STRING), endLine);

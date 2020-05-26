@@ -1,0 +1,51 @@
+main()
+	testBreakFor()
+	testBreakForEach()
+	testBreakWhile()
+	
+testBreakFor()
+	Boolean b
+	for ;b != true;:
+		for Integer i=1; i < 10; i = i + 1:
+			print(i)
+			if i % 3 == 0:
+			    break
+			    printLine("")
+		print(b)
+		if b:
+			b = false
+		else:
+			break
+	printLine("done")
+
+testBreakForEach()
+	for s; {"a","b","c","d"}:
+		for i; {1,2,3,4}:
+			print(i)
+			if i % 3 == 0:
+				Integer i=0
+			    break
+		if s == "b":
+			print("nobreak")
+		elseif s == "c":
+			String s
+			break
+			printLine(s)
+	printLine("done")
+	
+testBreakWhile()
+	Integer i
+	for true:
+		Integer y
+		for y != 5:
+			y = y + 1
+			print(y)
+			if y == 4:
+				break
+		i = i + y
+		y = 0
+		if i < 20:
+			print("again")
+		else :
+			break	
+	printLine("done")

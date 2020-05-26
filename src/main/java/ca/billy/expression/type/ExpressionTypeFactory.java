@@ -2,6 +2,7 @@ package ca.billy.expression.type;
 
 import org.apache.bcel.generic.Type;
 
+import ca.billy.expression.instruction.builder.ArrayEqualsExpressionBuilder;
 import ca.billy.expression.instruction.builder.BinaryExpressionBuilder;
 import ca.billy.expression.instruction.builder.CmpExpressionBuilder;
 import ca.billy.expression.instruction.builder.StringConcatExpressionBuilder;
@@ -40,6 +41,14 @@ public class ExpressionTypeFactory {
         expressionType.left = expressionType.right = type;
         expressionType.out = EnumType.BOOLEAN;
         expressionType.builder = new CmpExpressionBuilder(op, type.getBcelType());
+        return expressionType;
+    }
+    
+    public static SimpleExpressionType createArrayEqualExpressionType(String op) {
+        SimpleExpressionType expressionType = new SimpleExpressionType();
+        expressionType.left = expressionType.right = EnumType.ANY_ARRAY;
+        expressionType.out = EnumType.BOOLEAN;
+        expressionType.builder = new ArrayEqualsExpressionBuilder(op);
         return expressionType;
     }
 }

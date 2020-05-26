@@ -15,13 +15,15 @@ import org.apache.bcel.generic.Type;
 
 import ca.billy.BillyException;
 import ca.billy.bcel.utils.Branch;
+import ca.billy.expression.OperatorEnum;
 import ca.billy.instruction.BillyCodeInstruction.BillyCodeInstructionArgs;
+import ca.billy.type.EnumType;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class CmpExpressionBuilder extends AbstractExpressionBuilder {
 
-    private static final List<String> EQUALS = Arrays.asList("==", "!=");
+    private static final List<String> EQUALS = Arrays.asList(OperatorEnum.EQUALS.getOperator(), OperatorEnum.NOT_EQUALS.getOperator());
 
     private String op;
 
@@ -40,14 +42,14 @@ public class CmpExpressionBuilder extends AbstractExpressionBuilder {
         args.getIl().append(args.getFactory().createInvoke("java.util.Objects", "equals", Type.BOOLEAN, new Type[] { Type.OBJECT, Type.OBJECT }, Const.INVOKESTATIC));
 
         // Reverse the boolean response
-        if (op.equals("!=")) {
+        if (op.equals(OperatorEnum.NOT_EQUALS.getOperator())) {
             args.getIl().append(new ICONST(1));
             args.getIl().append(InstructionFactory.createBinaryOperation("^", Type.INT));
         }
     }
 
     private void createCmp(BillyCodeInstructionArgs args) {
-        Branch gotoBranch = new Branch(new GOTO(null), args, Type.BOOLEAN);
+        Branch gotoBranch = new Branch(new GOTO(null), args, EnumType.BOOLEAN);
         Branch cmpBranch = new Branch(InstructionFactory.createBranchInstruction(getOperation(args), null), args);
         
         cmpBranch.buildBranch();
@@ -58,7 +60,7 @@ public class CmpExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private short getOperation(BillyCodeInstructionArgs args) {
-        if (type.equals(Type.INT)) {
+        if (type.equals(Type.INT) || type.equals(Type.BOOLEAN)) {
             switch (op) {
                 case "==":
                     return Const.IF_ICMPNE;

@@ -49,16 +49,30 @@ public class StackMapBuilder {
 
         StackMapEntry[] map = new StackMapEntry[branchs.size()];
         for (int i = 0; i < map.length; ++i) {
-            // WARNING : This code don't verify if the locals are the same type .. maybe it should
-            int localDiff = branchs.get(i).getLocals().length - locals.length;
-            locals = branchs.get(i).getLocals();
             int offset = i == 0 ? branchs.get(i).getTargetPosition() : branchs.get(i).getTargetPosition() - 1 - branchs.get(i - 1).getTargetPosition();
-            map[i] = StackMapEntryFactory.create(branchs.get(i).getLocals(), branchs.get(i).getStacks(), localDiff, offset, cp);
+
+            if (sameType(locals, branchs.get(i).getLocals())) {
+                int localDiff = branchs.get(i).getLocals().length - locals.length;
+                map[i] = StackMapEntryFactory.create(branchs.get(i).getLocals(), branchs.get(i).getStacks(), localDiff, offset, cp);
+            } else {
+                map[i] = StackMapEntryFactory.createFullFrame(branchs.get(i).getLocals(), branchs.get(i).getStacks(), offset, cp);
+            }
+
+            locals = branchs.get(i).getLocals();
         }
 
         StackMap stackMap = new StackMap(stackMapTableEntry, 0, null, cp.getConstantPool());
         stackMap.setStackMap(map);
         return stackMap;
+    }
+
+    private boolean sameType(Type[] t1, Type[] t2) {
+        for (int i = 0; i < Math.min(t1.length, t2.length); ++i) {
+            if (!t1[i].equals(t2[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

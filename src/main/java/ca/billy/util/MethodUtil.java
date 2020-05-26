@@ -13,7 +13,7 @@ public class MethodUtil {
 
     public static String extractMethodName(String line) {
         int index = line.indexOf(Const.START_PARENTHESES);
-        return line.substring(0, index);
+        return line.substring(0, index).trim();
     }
 
     public static String[] extractParameters(String line) {

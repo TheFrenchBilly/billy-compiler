@@ -12,16 +12,4 @@ public interface IExpressionInstruction extends BillyCodeInstruction {
      * @See {@link IExpressionInstruction#matchResultType}
      */
     EnumType getResultType();
-
-    /**
-     * Check if the result type match the type.
-     * 
-     * @param type the {@link EnumType}
-     * @return if the type is matching the result type; otherwise false
-     * @See {@link IExpressionInstruction#matchResultType}
-     */
-    default boolean matchResultType(EnumType type) {
-        return getResultType().typeMatch(type);
-    }
-
 }

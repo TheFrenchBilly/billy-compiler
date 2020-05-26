@@ -1,13 +1,13 @@
-package ca.billy.line.control;
+package ca.billy.line.control.loop;
 
 import ca.billy.BillyException;
 import ca.billy.Const;
-import ca.billy.expression.Expression;
+import ca.billy.expression.ExpressionFactory;
 import ca.billy.instruction.BillyCodeInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.context.InstructionContainer;
 import ca.billy.instruction.context.VariableInstructionContext;
-import ca.billy.instruction.control.ForInstruction;
+import ca.billy.instruction.control.loop.ForInstruction;
 import ca.billy.line.BillyLineContainer;
 import ca.billy.line.BillyLineContainer.LineContext;
 import ca.billy.line.LineWrapper;
@@ -22,7 +22,7 @@ public class ForLine extends AbstractForLine {
     @Override
     public VariableInstructionContext createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
         int index = line.getLine().indexOf(Const.SPACE);
-        String[] exps = line.getLine().substring(index + 1, line.getLine().length() - 1).split(";");
+        String[] exps = line.getLine().substring(index + 1, line.getLine().length() - 1).split(Const.SEMICOLONS);
         
         // ugh ? should i create a empty container ?
         InstructionContainer instructionContainer = new InstructionContainer();
@@ -50,7 +50,7 @@ public class ForLine extends AbstractForLine {
                     .createBillyInstruction(subLine, instructionContainer);
         }
 
-        return new ForInstruction(instructionContext, ins1, new Expression(exps[1], EnumType.BOOLEAN, line.getLineNumber()), ins3);
+        return new ForInstruction(instructionContext, ins1, ExpressionFactory.createExpression(exps[1], EnumType.BOOLEAN, line.getLineNumber()), ins3);
     }
 
 }

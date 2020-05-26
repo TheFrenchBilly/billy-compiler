@@ -2,6 +2,8 @@ Integer[] ints = {12, 29, 0, 13}
 
 main()
 	testPrintArray()
+	testArraySubset()
+	testEquals()
 	Boolean[] bools = {true, true, false}
 	Float[] floats
 	printLine(bools[2])
@@ -20,3 +22,26 @@ testPrintArray()
 	printLine("The string array length is " + arrayLength(strings))
 	printLine(strings)
 	printLine(strings[0])
+	printLine(strings[:0])
+	printLine("testPrintArray() Done")
+	
+testArraySubset()
+	printLine(ints[1:1])
+	printLine(ints[0:2])
+	for i;ints[1:4]:
+		printLine(i)
+	printLine("testArraySubset() Done")
+
+testEquals()
+	Boolean[] a = {true, true, false}
+	Boolean[] b = {false, true, false}
+	
+	printLine(ints[1:1] == Integer[0]) // true 	
+	printLine(a == b) // false
+	printLine(a[1:3] == b[1:3]) // true
+	
+	printLine(ints != b) // true
+	printLine(a != b) // true
+	printLine(a[1:3] != b[1:3]) // false
+	printLine("testEquals() Done")
+	

@@ -34,7 +34,7 @@ public class ElseLine implements BillyLine {
         if (index != -1) {
             String exp = line.getLine().substring(index + 1, line.getLine().length() - 1);
             if (!exp.trim().equals(Const.EMPTY)) {
-                throw new BillyException("Invalid else ligne :" + line);
+                throw new BillyException("Invalid else ligne :" + line.getLine());
             }
         }
 

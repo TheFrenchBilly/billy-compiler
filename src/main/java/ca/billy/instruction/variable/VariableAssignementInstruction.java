@@ -9,15 +9,14 @@ public class VariableAssignementInstruction implements BillyCodeInstruction {
 
     private String name;
 
-    private String expressionString;
+    private Expression expression;
 
     private int lineNumber;
 
-    public VariableAssignementInstruction(String name, String expressionString, int lineNumber) {
+    public VariableAssignementInstruction(String name, Expression expression) {
         super();
         this.name = name;
-        this.expressionString = expressionString;
-        this.lineNumber = lineNumber;
+        this.expression = expression;
     }
 
     @Override
@@ -26,7 +25,8 @@ public class VariableAssignementInstruction implements BillyCodeInstruction {
         if (variableDefinitionInstruction == null)
             throw new BillyException("variable not define : " + name, lineNumber);
 
-        new Expression(expressionString, variableDefinitionInstruction.getEnumType(), lineNumber).build(args);
+        expression.setExpectedReturn(variableDefinitionInstruction.getEnumType());
+        expression.build(args);
         variableDefinitionInstruction.buildStore(args);
     }
 

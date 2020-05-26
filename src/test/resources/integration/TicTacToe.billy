@@ -1,7 +1,6 @@
-// Tic tac toe in billy 0.0.1
+// Tic tac toe in billy 0.0.3
 String choice
 
-// Array will have been good ...
 String[] grid
 
 String state // D -> Draw, X -> X win, O -> O win 
@@ -39,28 +38,17 @@ switchTurn()
 		player = "X"
 
 registerPlayerInput()
+	Boolean validInput
 	print("Player " + player + " ->")
 	String choice = readLine()
-	// Use this condition because the priority of operation does not exist ...
-	if choice + grid[0] == "11":
-		grid[0] = player
-	elseif choice + grid[1] == "22":
-		grid[1] = player
-	elseif choice + grid[2] == "33":
-		grid[2] = player
-	elseif choice + grid[3] == "44":
-		grid[3] = player
-	elseif choice + grid[4] == "55":
-		grid[4] = player
-	elseif choice + grid[5] == "66":
-		grid[5] = player
-	elseif choice + grid[6] == "77":
-		grid[6] = player
-	elseif choice + grid[7] == "88":
-		grid[7] = player
-	elseif choice + grid[8] == "99":
-		grid[8] = player
-	else:
+	
+	for i,value ; grid:
+		if value == choice:
+			grid[i] = player
+			validInput = true
+			break
+
+	if validInput == false:
 		printLine("Invalid Input")
 		registerPlayerInput()
 

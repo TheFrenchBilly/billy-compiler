@@ -73,6 +73,11 @@ public class InstructionContainer implements BillyInstructionContext {
     public List<EnumType> getFrameVariables() {
         return new ArrayList<>();
     }
+    
+    @Override
+    public List<EnumType> getStackTypes() {
+        return new ArrayList<>();
+    }
 
     @Override
     public boolean isExistingVariable(String variableName) {
@@ -152,7 +157,7 @@ public class InstructionContainer implements BillyInstructionContext {
                 cg.getConstantPool());
 
         InstructionFactory factory = new InstructionFactory(cg);
-        BillyCodeInstructionArgs args = BillyCodeInstructionArgs.builder().cg(cg).cp(cg.getConstantPool()).il(il).factory(factory).build();
+        BillyCodeInstructionArgs args = BillyCodeInstructionArgs.builder().cg(cg).cp(cg.getConstantPool()).il(il).factory(factory).context(this).build();
         staticAttributes.forEach(sa -> sa.build(args));
         il.append(InstructionConst.RETURN);
         staticMg.setMaxLocals();

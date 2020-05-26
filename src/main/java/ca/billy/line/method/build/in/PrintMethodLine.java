@@ -1,7 +1,7 @@
 package ca.billy.line.method.build.in;
 
 import ca.billy.Const;
-import ca.billy.expression.Expression;
+import ca.billy.expression.ExpressionFactory;
 import ca.billy.instruction.BillyInstruction;
 import ca.billy.instruction.context.BillyInstructionContext;
 import ca.billy.instruction.method.call.PrintInstruction;
@@ -24,7 +24,7 @@ public class PrintMethodLine extends AbstractParentheseLine {
 
     @Override
     public BillyInstruction createBillyInstruction(LineWrapper line, BillyInstructionContext instructionContext) {
-        return new PrintInstruction(new Expression(MethodUtil.extractParameters(line.getLine())[0], EnumType.ANY, line.getLineNumber()));
+        return new PrintInstruction(ExpressionFactory.createExpression(MethodUtil.extractParameters(line.getLine())[0], EnumType.ANY, line.getLineNumber()));
     }
 
 }

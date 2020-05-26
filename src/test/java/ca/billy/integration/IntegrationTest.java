@@ -24,7 +24,7 @@ public class IntegrationTest {
 
     @AfterClass
     public static void after() {
-        TestHelper.removeGeneratedFile();
+        // TestHelper.removeGeneratedFile();
     }
 
     @Test
@@ -51,7 +51,7 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("Hellofalse\ntrue358\n", res);
+        assertEquals("Hellofalse\ntrue695\n350\n", res);
     }
 
     @Test
@@ -64,6 +64,21 @@ public class IntegrationTest {
                 "The string array length is 2\n"
                         + "[ Hello world ]\n"
                         + "Hello\n"
+                        + "world\n"
+                        + "testPrintArray() Done\n"
+                        + "[ ]\n"
+                        + "[ 12 29 ]\n"
+                        + "29\n"
+                        + "0\n"
+                        + "13\n"
+                        + "testArraySubset() Done\n"
+                        + "true\n"
+                        + "false\n"
+                        + "true\n"
+                        + "true\n"
+                        + "true\n"
+                        + "false\n"
+                        + "testEquals() Done\n"
                         + "false\n"
                         + "13\n"
                         + "3\n"
@@ -98,7 +113,25 @@ public class IntegrationTest {
         fileCompiler.writeByteCode();
 
         String res = TestHelper.run();
-        assertEquals("0123456789done\n" + "10987654321done\n" + "adone\n" + "2.04.06.0done\n" + "1-12345 2-12345 3-12345 4-12345 5-12345 \n", res);
+        assertEquals("0123456789done\n" + "10987654321done\n" + "adone\n" + "2.04.06.0done\n" + "1-01234 2-01234 3-01234 4-01234 5-01234 \n", res);
+    }
+
+    @Test
+    public void testReturn() throws Exception {
+        fileCompiler.compileFile("src/test/resources/integration/Return.billy");
+        fileCompiler.writeByteCode();
+
+        String res = TestHelper.run();
+        assertEquals("1 2 3 4 5 6 7 8 9 10 \n", res);
+    }
+
+    @Test
+    public void testBreak() throws Exception {
+        fileCompiler.compileFile("src/test/resources/integration/Break.billy");
+        fileCompiler.writeByteCode();
+
+        String res = TestHelper.run();
+        assertEquals("123falsedone\n" + "123123nobreak123done\n" + "1234again1234again1234again1234again1234done\n", res);
     }
 
     /** We just compile for this test ! */
