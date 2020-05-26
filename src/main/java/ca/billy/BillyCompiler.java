@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class BillyCompiler {
     
-    private static final String VERSION = "0.0.3-SNAPSHOT";
+    private static final String VERSION = "0.0.3";
 
     /**
      * The main method for the compiler.
